@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="MVP,MVC,MVVM," />
 
 
 
@@ -79,16 +79,24 @@
 
 
 
-<meta name="description" content="燃烧吧，我的小宇宙！">
+<meta name="description" content="前言在开发应用程序的时候，以求更好的管理应用程序的复杂性，基于职责分离的思想都会对应用程序进行分层。在开发图形界面应用程序的时候，会吧管理用户界面的层次称为View，应用程序的数据称为Model(注意这里的Model指的是Domain Model,这个应用程序对需要解决的问题的数据抽象，不包含应用的状态，可以理解为对象)。Model层对应用程序的业务逻辑无知，只保存数据结构和提供数据操作的接口:">
 <meta property="og:type" content="article">
 <meta property="og:title" content="关于MVC、MVP和MVVM了解">
 <meta property="og:url" content="http://yoursite.com/2018/05/24/关于MVC、MVP和MVVM了解/index.html">
 <meta property="og:site_name" content="WinnerCode">
-<meta property="og:description" content="燃烧吧，我的小宇宙！">
-<meta property="og:updated_time" content="2018-05-24T06:34:19.273Z">
+<meta property="og:description" content="前言在开发应用程序的时候，以求更好的管理应用程序的复杂性，基于职责分离的思想都会对应用程序进行分层。在开发图形界面应用程序的时候，会吧管理用户界面的层次称为View，应用程序的数据称为Model(注意这里的Model指的是Domain Model,这个应用程序对需要解决的问题的数据抽象，不包含应用的状态，可以理解为对象)。Model层对应用程序的业务逻辑无知，只保存数据结构和提供数据操作的接口:">
+<meta property="og:image" content="http://yoursite.com/2018/05/24/关于MVC、MVP和MVVM了解/01.png">
+<meta property="og:image" content="http://yoursite.com/2018/05/24/关于MVC、MVP和MVVM了解/02.png">
+<meta property="og:image" content="http://yoursite.com/2018/05/24/关于MVC、MVP和MVVM了解/03.png">
+<meta property="og:image" content="http://yoursite.com/2018/05/24/关于MVC、MVP和MVVM了解/04.png">
+<meta property="og:image" content="http://yoursite.com/2018/05/24/关于MVC、MVP和MVVM了解/05.png">
+<meta property="og:image" content="http://yoursite.com/2018/05/24/关于MVC、MVP和MVVM了解/06.png">
+<meta property="og:image" content="http://yoursite.com/2018/05/24/关于MVC、MVP和MVVM了解/07.png">
+<meta property="og:updated_time" content="2018-05-27T15:05:05.800Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于MVC、MVP和MVVM了解">
-<meta name="twitter:description" content="燃烧吧，我的小宇宙！">
+<meta name="twitter:description" content="前言在开发应用程序的时候，以求更好的管理应用程序的复杂性，基于职责分离的思想都会对应用程序进行分层。在开发图形界面应用程序的时候，会吧管理用户界面的层次称为View，应用程序的数据称为Model(注意这里的Model指的是Domain Model,这个应用程序对需要解决的问题的数据抽象，不包含应用的状态，可以理解为对象)。Model层对应用程序的业务逻辑无知，只保存数据结构和提供数据操作的接口:">
+<meta name="twitter:image" content="http://yoursite.com/2018/05/24/关于MVC、MVP和MVVM了解/01.png">
 
 
 
@@ -301,6 +309,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/架构设计/" itemprop="url" rel="index">
+                    <span itemprop="name">架构设计</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -328,7 +358,59 @@
       
 
       
-        
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>在开发应用程序的时候，以求更好的管理应用程序的复杂性，基于职责分离的思想都会对应用程序进行分层。在开发图形界面应用程序的时候，会吧管理用户界面的层次称为View，应用程序的数据称为Model(注意这里的Model指的是Domain Model,这个应用程序对需要解决的问题的数据抽象，不包含应用的状态，可以理解为对象)。Model层对应用程序的业务逻辑无知，只保存数据结构和提供数据操作的接口:</p>
+<img src="/2018/05/24/关于MVC、MVP和MVVM了解/01.png" alt="01.png" title="">
+<p>有了View和Model的分层，那么就有了两个问题：</p>
+<blockquote>
+<p>1、响应用户操作的业务逻辑（例如排序）的管理；<br>2、View如何同步Model的变更；</p>
+</blockquote>
+<p>带着这两个问题开始探索MV*模式，会发现这些模式之间的差异可以归纳为这两个问题处理方式的不同。而几乎所有的MV*模式都是经典的MVC的修改版。</p>
+<h4 id="MVC"><a href="#MVC" class="headerlink" title="MVC"></a>MVC</h4><h5 id="MVC的依赖关系"><a href="#MVC的依赖关系" class="headerlink" title="MVC的依赖关系"></a>MVC的依赖关系</h5><p>MVC除了 把应用程序分成View、Model层，还额外的加了一个Controller层，它的职责就是专门管理应用程序的业务逻辑。Model、View、Controller三层的依赖关系如下：</p>
+<img src="/2018/05/24/关于MVC、MVP和MVVM了解/02.png" alt="依赖关系" title="依赖关系">
+<p>Controller和View都依赖Model层，Controller和View可以相互依赖。在一些网上的资料Controller和View之间的依赖关系可能不一样，有些是单向依赖，有些是双向依赖，这个其实关系不大，后面会看到它们的依赖关系都是为了把处理用户行为触发的业务逻辑的处理权交给Controller。</p>
+<h5 id="MVC的调用关系"><a href="#MVC的调用关系" class="headerlink" title="MVC的调用关系"></a>MVC的调用关系</h5><p>用户对View操作以后，View捕获到这个操作，会把处理的权利交移给Controller(Pass calls)；Controller接着会执行相关的业务逻辑，这些业务逻辑可能需要对Model进行相应的操作；当Model变更了以后，会通过观察者模式（Observer Pattern）通知View;View通过观察者模式收到Model变更的消息以后，会向Model请求最新的数据，然后重新更新界面。如下图：</p>
+<img src="/2018/05/24/关于MVC、MVP和MVVM了解/03.png" alt="03.png" title="">
+<p>看似没有什么特别的地方，但是由几个需要特别关注的关键点：</p>
+<blockquote>
+<p>1、View是把控制权交移给Controller，自己不执行业务逻辑。<br>2、Controller执行业务逻辑并且操作Model，但不会直接操作View，可以说它是对View无知的。<br>3、 View和Model的同步消息是通过观察者模式进行，而同步操作是由View自己请求Model的数据然后对视图进行更新。</p>
+</blockquote>
+<p>需要特别注意的是MVC模式的精髓在于第三点：Model的更新是通过观察者模式告知View的，具体表现形式可以是Pub/Sub或者是触发Events。而网上很对对MVC的描述都没有强调这一点。通过观察者模式的好处就是：不同MVC三角关系可能会有共同的Model，一个MVC三角中的Controller操作了Model以后，两个MVC三角的View都会接收到通知，然后更新自己。保持了依赖同一块Model的不同View显示数据的实时性和准确性。我们每天都在用观察者模式，在几十年前就已经被大神们整合到MVC的架构当中。</p>
+<h5 id="MVC的优缺点"><a href="#MVC的优缺点" class="headerlink" title="MVC的优缺点"></a>MVC的优缺点</h5><p>优点：</p>
+<blockquote>
+<p>1、 把业务逻辑全部分离到Controller中， 模块化程度高。当业务逻辑变更的时候， 不需要变更View和Model，只需要Controller换成另外一个Controller就行了（Swappable Controller）.<br>2、 观察者模式可以做到多视图同时更新。</p>
+</blockquote>
+<p>缺点：</p>
+<blockquote>
+<p>1、Controller测试困难。因为视图同步操作是由View自己执行， 而View只能在由UI的环境下运行。在没有UI环境下对Controller进行单元测试的时候，Controller业务逻辑的正确性是无法验证的：Controller更新Model的时候， 无法对View的更新操作进行断言。</p>
+<p>2、View无法组件化。View是强依赖特定的Model的， 如果需要把这个View抽出来作为一个另外一个应用程序可复用的组件就困难了。因为不同程序的Domain Model是不一样的。</p>
+</blockquote>
+<h5 id="MVC-Model2"><a href="#MVC-Model2" class="headerlink" title="MVC Model2"></a>MVC Model2</h5><p>在Web服务端开发的时候也会接触到MVC模式， 而这种MVC模式不能严格称为MVC模式。经典的MVC模式只是解决客户端图形界面应用程序的问题， 而对服务端无效。服务端的MVC模式有自己特定的名字：MVC Model 2, 或者叫JSP Model 2, 或者直接就是Model 2。 Model2 客户端服务端的交互模式如下：</p>
+<img src="/2018/05/24/关于MVC、MVP和MVVM了解/04.png" alt="04.png" title="">
+<p>服务端接收到客户端的请求，服务端通过路由规则把这个请求交由特定的Controller进行处理， Controller执行相应的业务逻辑， 对数据库数据（Model）进行操作， 然后用数据去渲染特定的模板， 返回给客户端。</p>
+<p>因为HTTP协议是单公协议并且是无状态的， 服务器无法直接给客户端推送数据。除非客户端再次发起请求， 否则服务器端的Model的变更就无法告知客户端。所以可以看到经典的MVC中Model通过观察者模式告知View更新这一环被无情的打破， 不能称为严格的MVC。</p>
+<p>Model 2模式最早在1998年应用在JSP应用程序当中，JSP Model 1应用管理的混乱诱发了JSP参考了客户端MVC模式，催生了Model 2。</p>
+<img src="/2018/05/24/关于MVC、MVP和MVVM了解/05.png" alt="05.png" title="">
+<p>后来这种模式几乎被应用在所有语言的Web开发框架当中。PHP的ThinkPHP，Python的Dijango、Flask，NodeJS的Express，Ruby的RoR，基本都采纳了这种模式。平常所讲的MVC基本是这种服务端的MVC。</p>
+<h4 id="MVP"><a href="#MVP" class="headerlink" title="MVP"></a>MVP</h4><p>MVP模式有两种：</p>
+<blockquote>
+<p>1、Passive View<br>2、Supervising Controller</p>
+</blockquote>
+<p>而大多数情况下讨论的都是Passive View模式。 本文对PV模式进行较为详细的介绍， 而SC模式则简单提及。</p>
+<p>历史背景</p>
+<p>MVP模式是MVC模式的改良。 在上世纪90年代， IBM旗下的子公司Taligent在用C/C++开发一个叫CommonPoint的图形界面应用系统的时候提出来的。</p>
+<h5 id="MVP-Passive-View-的依赖关系"><a href="#MVP-Passive-View-的依赖关系" class="headerlink" title="MVP(Passive View)的依赖关系"></a>MVP(Passive View)的依赖关系</h5><p>MVP模式把MVC模式中的Controller换成Presenter。MVP层次之间的依赖关系如下：</p>
+<img src="/2018/05/24/关于MVC、MVP和MVVM了解/06.png" alt="06.png" title="">
+<p>MVP打破了View原来对于Model的依赖。其余的依赖关系和MVC模式一致。</p>
+<h5 id="MVP（Passive-View）的调用关系"><a href="#MVP（Passive-View）的调用关系" class="headerlink" title="MVP（Passive View）的调用关系"></a>MVP（Passive View）的调用关系</h5><p>既然View对Model的依赖被打破了， 那View如何同步Model的变更？看看MVP的调用关系：</p>
+<img src="/2018/05/24/关于MVC、MVP和MVVM了解/07.png" alt="07.png" title="">
+<p>和MVC模式一样， 用户对View的操作都会从View交移给Presenter。Presenter同样的会执行相应的业务逻辑， 并且对Model进行相应的操作；而这个时候Model也是通过观察者模式把自己变更的消息传递出去， 但是是传给Presenter而不是View。Presenter获取到Model变更的消息以后， <strong>通过View提供的接口更新界面。</strong></p>
+<p>关键点：</p>
+<blockquote>
+<p>1、View不再负责同步的逻辑， 而是由Presenter负责。Presenter中既有业务逻辑也有同步逻辑。<br>2、View需要提供操作界面的接口给Presenter进行调用。（关键）</p>
+</blockquote>
+<p>对比在MVC中， Controller是不能操作View的， View也没有提供相应的接口；而在MVP当中，Presenter可以操作View, View需要提一组对界面操作的接口给Presenter进行调用；Model仍然通过事件广播自己的变更，但有Presenter监听而不是View。</p>
+<p>MVP模式， 这里也提供一个用<a href="https://github.com/googlesamples/android-architecture/tree/todo-mvp/" title="MVP例子" target="_blank" rel="external">MVP例子todo-mvp</a>；</p>
+<h5 id="MVP（Passive-View）的优缺点"><a href="#MVP（Passive-View）的优缺点" class="headerlink" title="MVP（Passive View）的优缺点"></a>MVP（Passive View）的优缺点</h5>
       
     </div>
     
@@ -350,6 +432,16 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MVP/" rel="tag"># MVP</a>
+          
+            <a href="/tags/MVC/" rel="tag"># MVC</a>
+          
+            <a href="/tags/MVVM/" rel="tag"># MVVM</a>
+          
+        </div>
       
 
       
@@ -424,8 +516,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -455,7 +556,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -466,7 +567,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -489,6 +590,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MVC"><span class="nav-number">2.</span> <span class="nav-text">MVC</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#MVC的依赖关系"><span class="nav-number">2.1.</span> <span class="nav-text">MVC的依赖关系</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MVC的调用关系"><span class="nav-number">2.2.</span> <span class="nav-text">MVC的调用关系</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MVC的优缺点"><span class="nav-number">2.3.</span> <span class="nav-text">MVC的优缺点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MVC-Model2"><span class="nav-number">2.4.</span> <span class="nav-text">MVC Model2</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MVP"><span class="nav-number">3.</span> <span class="nav-text">MVP</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#MVP-Passive-View-的依赖关系"><span class="nav-number">3.1.</span> <span class="nav-text">MVP(Passive View)的依赖关系</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MVP（Passive-View）的调用关系"><span class="nav-number">3.2.</span> <span class="nav-text">MVP（Passive View）的调用关系</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MVP（Passive-View）的优缺点"><span class="nav-number">3.3.</span> <span class="nav-text">MVP（Passive View）的优缺点</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

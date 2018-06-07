@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,性能优化," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、&amp;lt;include/&amp;gt;标签在布局优化中是使用最多的一个标签了，它就是为了解决重复定义布局的问题。标签就相当于C、C++中的include头文件一样，把一些常用的底层的API封装起来，需要的时候引入即可。在一些开源的J2EE中许多XML配置文件也都会使用标签，将多个配置文件组合成为一个更为复杂的配置文件，如最常见的S2SH。
+在以前Android开发中，由于ActionBar设计上的不">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android布局优化之include、merge、ViewStub的使用">
+<meta property="og:url" content="http://yoursite.com/2018/06/07/Android布局优化之include、merge、ViewStub的使用/index.html">
+<meta property="og:site_name" content="WinnerCode">
+<meta property="og:description" content="一、&amp;lt;include/&amp;gt;标签在布局优化中是使用最多的一个标签了，它就是为了解决重复定义布局的问题。标签就相当于C、C++中的include头文件一样，把一些常用的底层的API封装起来，需要的时候引入即可。在一些开源的J2EE中许多XML配置文件也都会使用标签，将多个配置文件组合成为一个更为复杂的配置文件，如最常见的S2SH。
+在以前Android开发中，由于ActionBar设计上的不">
+<meta property="og:image" content="http://www.sunnyang.com/wp-content/uploads/2016/04/layout_merge01.png">
+<meta property="og:image" content="http://www.sunnyang.com/wp-content/uploads/2016/04/layout_merge02.png">
+<meta property="og:image" content="http://www.sunnyang.com/wp-content/uploads/2016/04/viewstub_view.png">
+<meta property="og:updated_time" content="2018-06-07T14:57:11.549Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android布局优化之include、merge、ViewStub的使用">
+<meta name="twitter:description" content="一、&amp;lt;include/&amp;gt;标签在布局优化中是使用最多的一个标签了，它就是为了解决重复定义布局的问题。标签就相当于C、C++中的include头文件一样，把一些常用的底层的API封装起来，需要的时候引入即可。在一些开源的J2EE中许多XML配置文件也都会使用标签，将多个配置文件组合成为一个更为复杂的配置文件，如最常见的S2SH。
+在以前Android开发中，由于ActionBar设计上的不">
+<meta name="twitter:image" content="http://www.sunnyang.com/wp-content/uploads/2016/04/layout_merge01.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/07/Android布局优化之include、merge、ViewStub的使用/"/>
+
+
+
+
+
+  <title>Android布局优化之include、merge、ViewStub的使用 | WinnerCode</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?642f81466b73ae68d2149c1678952ac8";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WinnerCode</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/07/Android布局优化之include、merge、ViewStub的使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Winner Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WinnerCode">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android布局优化之include、merge、ViewStub的使用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-07T22:56:02+08:00">
+                2018-06-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android高级/" itemprop="url" rel="index">
+                    <span itemprop="name">Android高级</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="一、-lt-include-gt"><a href="#一、-lt-include-gt" class="headerlink" title="一、&lt;include/&gt;"></a>一、<code>&lt;include/&gt;</code></h2><p><include>标签在布局优化中是使用最多的一个标签了，它就是为了解决重复定义布局的问题。<include>标签就相当于C、C++中的include头文件一样，把一些常用的底层的API封装起来，需要的时候引入即可。在一些开源的J2EE中许多XML配置文件也都会使用<include>标签，将多个配置文件组合成为一个更为复杂的配置文件，如最常见的S2SH。</include></include></include></p>
+<p>在以前Android开发中，由于ActionBar设计上的不统一以及兼容性问题，所以很多应用都自定义了一套自己的标题栏titlebar。标题栏我们知道在应用的每个界面几乎都会用到，在这里可以作为一个很好的示例来解释<include>标签的使用。</include></p>
+<p>下面是一个自定义的titlebar文件：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">FrameLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:background</span>=<span class="string">"@color/titlebar_bg"</span>&gt;</div><div class="line"> </div><div class="line">    <span class="tag">&lt;<span class="name">ImageView</span> <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></div><div class="line">               <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">               <span class="attr">android:src</span>=<span class="string">"@drawable/gafricalogo"</span> /&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">FrameLayout</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>在应用中使用titlebar布局文件，我们通过<include>标签,布局文件如下：</include></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:background</span>=<span class="string">"@color/app_bg"</span></div><div class="line">    <span class="attr">android:gravity</span>=<span class="string">"center_horizontal"</span>&gt;</div><div class="line"> </div><div class="line">    <span class="tag">&lt;<span class="name">include</span> <span class="attr">layout</span>=<span class="string">"@layout/titlebar"</span>/&gt;</span></div><div class="line"> </div><div class="line">    <span class="tag">&lt;<span class="name">TextView</span> <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></div><div class="line">              <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">              <span class="attr">android:text</span>=<span class="string">"@string/hello"</span></div><div class="line">              <span class="attr">android:padding</span>=<span class="string">"10dp"</span> /&gt;</div><div class="line"> </div><div class="line">    ...</div><div class="line"> </div><div class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>在<include>标签中可以覆盖导入的布局文件root布局的布局属性（如layout_*属性）。</include></p>
+<p>布局示例如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">include</span> <span class="attr">android:id</span>=<span class="string">"@+id/news_title"</span></span></div><div class="line">         <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">         <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">         <span class="attr">layout</span>=<span class="string">"@layout/title"</span>/&gt;</div></pre></td></tr></table></figure>
+<p>如果想使用<include>标签覆盖嵌入布局root布局属性，必须同时覆盖layout_height和layout_width属性，否则会直接报编译时语法错误。</include></p>
+<blockquote>
+<p><em>Layout parameter layout_height ignored unless layout_width is also specified on <include> tag</include></em></p>
+</blockquote>
+<p>如果<include>标签已经定义了id，而嵌入布局文件的root布局文件也定义了id，<include>标签的id会覆盖掉嵌入布局文件root的id，如果include标签没有定义id则会使用嵌入文件root的id。</include></include></p>
+<h2 id="二、-lt-merge-gt"><a href="#二、-lt-merge-gt" class="headerlink" title="二、&lt;merge/&gt;"></a>二、<code>&lt;merge/&gt;</code></h2><p><merge>标签都是与<include>标签组合使用的，它的作用就是可以有效减少View树的层次来优化布局。</include></merge></p>
+<p>下面通过一个简单的示例探讨一下<merge>标签的使用，下面是嵌套布局的layout_text.xml文件：</merge></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span> &gt;</div><div class="line">    <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/textView"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:text</span>=<span class="string">"Hello World!"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span> /&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>一个线性布局中嵌套一个文本视图，主布局如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/layout_wrap"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span> &gt;</div><div class="line"> </div><div class="line">    <span class="tag">&lt;<span class="name">include</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/layout_import"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">layout</span>=<span class="string">"@layout/layout_text"</span> /&gt;</div><div class="line">	</div><div class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>通过hierarchyviewer我们可以看到主布局View树的部分层级结构如下图：</p>
+<p><a href="http://www.sunnyang.com/wp-content/uploads/2016/04/layout_merge01.png" target="_blank" rel="external"><img src="http://www.sunnyang.com/wp-content/uploads/2016/04/layout_merge01.png" alt="layout_merge01"></a></p>
+<p>现在讲嵌套布局跟布局标签更改为<merge>，merge_text.xml布局文件如下：</merge></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">merge</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span> &gt;</span></div><div class="line"> </div><div class="line">    <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/textView"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:text</span>=<span class="string">"Hello World!"</span>/&gt;</div><div class="line"> </div><div class="line"><span class="tag">&lt;/<span class="name">merge</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>然后将主布局<include>标签中的layout更改为merge_text.xml，运行后重新截图如下:</include></p>
+<p><a href="http://www.sunnyang.com/wp-content/uploads/2016/04/layout_merge02.png" target="_blank" rel="external"><img src="http://www.sunnyang.com/wp-content/uploads/2016/04/layout_merge02.png" alt="layout_merge02"></a></p>
+<p>对比截图就可以发现上面的四层结构，现在已经是三层结构了。当我们使用<merge>标签的时候，系统会自动忽略merge层级，而把TextView直接放置与<include>平级。</include></merge></p>
+<p><merge>标签在使用的时候需要特别注意布局的类型，例如我的<merge>标签中包含的是一个LinearLayout布局视图，布局中的元素是线性排列的，如果嵌套进主布局时，include标签父布局时FrameLayout，这种方式嵌套肯定会出问题的，merge中元素会按照FrameLayout布局方式显示。所以在使用的时候，<merge>标签虽然可以减少布局层级，但是它的限制也不可小觑。</merge></merge></merge></p>
+<p><merge>只能作为XML布局的根标签使用。当Inflate以<merge>开头的布局文件时，必须指定一个父ViewGroup，并且必须设定attachToRoot为true。</merge></merge></p>
+<p><code>View android.view.LayoutInflater.inflate(int resource, ViewGroup root, boolean attachToRoot)</code></p>
+<p>root不可少，attachToRoot必须为true。</p>
+<h2 id="三、ViewStub"><a href="#三、ViewStub" class="headerlink" title="三、ViewStub"></a>三、ViewStub</h2><p>在开发过程中，经常会遇到这样一种情况，有些布局很复杂但是却很少使用。例如条目详情、进度条标识或者未读消息等，这些情况如果在一开始初始化，虽然设置可见性<code>View.GONE</code>,但是在Inflate的时候View仍然会被Inflate，仍然会创建对象，由于这些布局又想到复杂，所以会很消耗系统资源。</p>
+<p>ViewStub就是为了解决上面问题的，ViewStub是一个轻量级的View，它一个看不见的，不占布局位置，占用资源非常小的控件。</p>
+<h3 id="定义ViewStub布局文件"><a href="#定义ViewStub布局文件" class="headerlink" title="定义ViewStub布局文件"></a>定义ViewStub布局文件</h3><p>下面是一个ViewStub布局文件：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/layout_wrap"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span> &gt;</div><div class="line"> </div><div class="line">    <span class="tag">&lt;<span class="name">ViewStub</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/stub_image"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:inflatedId</span>=<span class="string">"@+id/image_import"</span></div><div class="line">        <span class="attr">android:layout</span>=<span class="string">"@layout/layout_image"</span> /&gt;</div><div class="line"> </div><div class="line">    <span class="tag">&lt;<span class="name">ViewStub</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/stub_text"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:inflatedId</span>=<span class="string">"@+id/text_import"</span></div><div class="line">        <span class="attr">android:layout</span>=<span class="string">"@layout/layout_text"</span> /&gt;</div><div class="line"> </div><div class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>layout_image.xml文件如下（layout_text.xml类似）：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/layout_image"</span>&gt;</div><div class="line"> </div><div class="line">    <span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/imageView"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span> /&gt;</div><div class="line"> </div><div class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="加载ViewStub布局文件"><a href="#加载ViewStub布局文件" class="headerlink" title="加载ViewStub布局文件"></a>加载ViewStub布局文件</h3><p>动态加载ViewStub所包含的布局文件有两种方式，方式一使用使用inflate()方法，方式二就是使用setVisibility(View.VISIBLE)。</p>
+<p>示例java代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> ViewStub viewStub;</div><div class="line"> </div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">	<span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">	setContentView(R.layout.layout_main2);</div><div class="line">	viewStub = (ViewStub) findViewById(R.id.stub_image);</div><div class="line">    <span class="comment">//viewStub.inflate();//方式一</span></div><div class="line">	viewStub.setVisibility(View.VISIBLE);<span class="comment">//方式二</span></div><div class="line">	ImageView imageView = (ImageView) findViewById(R.id.imageView);</div><div class="line">	imageView.setImageResource(R.drawable.image);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>示例View层级截图如下：</p>
+<p><a href="http://www.sunnyang.com/wp-content/uploads/2016/04/viewstub_view.png" target="_blank" rel="external"><img src="http://www.sunnyang.com/wp-content/uploads/2016/04/viewstub_view.png" alt="viewstub_view"></a></p>
+<p>ViewStub一旦visible/inflated,它自己就不在是View试图层级的一部分了。所以后面无法再使用ViewStub来控制布局，填充布局root布局如果有id，则会默认被android:inflatedId所设置的id取代，如果没有设置android:inflatedId，则会直接使用填充布局id。</p>
+<p>由于ViewStub这种使用后即可就置空的策略，所以当需要在运行时不止一次的显示和隐藏某个布局，那么ViewStub是做不到的。这时就只能使用View的可见性来控制了。</p>
+<p>layout_*相关属性与include标签相似，如果使用应该在ViewStub上面使用，否则使用在嵌套进来布局root上面无效。</p>
+<p>ViewStub的另一个缺点就是目前还不支持merge标签。</p>
+<h2 id="四、小结"><a href="#四、小结" class="headerlink" title="四、小结"></a>四、小结</h2><p>Android布局优化基本上就设计上面include、merge、ViewStub三个标签的使用。在平常开发中布局推荐使用RelativeLayout，它也可以有效减少布局层级嵌套。最后了将merge和include源码附上，ViewStub就是一个View，就不贴出来了。</p>
+<h3 id="Include源码"><a href="#Include源码" class="headerlink" title="Include源码"></a>Include源码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Exercise &lt;include /&gt; tag in XML files.</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Include</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle icicle)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(icicle);</div><div class="line">        setContentView(R.layout.include_tag);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="Merge源码"><a href="#Merge源码" class="headerlink" title="Merge源码"></a>Merge源码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Exercise &lt;merge /&gt; tag in XML files.</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Merge</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> LinearLayout mLayout;</div><div class="line"> </div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle icicle)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(icicle);</div><div class="line"> </div><div class="line">        mLayout = <span class="keyword">new</span> LinearLayout(<span class="keyword">this</span>);</div><div class="line">        mLayout.setOrientation(LinearLayout.VERTICAL);</div><div class="line">        LayoutInflater.from(<span class="keyword">this</span>).inflate(R.layout.merge_tag, mLayout);</div><div class="line"> </div><div class="line">        setContentView(mLayout);</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    <span class="function"><span class="keyword">public</span> ViewGroup <span class="title">getLayout</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mLayout;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/wechat-qcode.jpg" alt="Winner Liu wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/性能优化/" rel="tag"># 性能优化</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/07/Android内存泄漏总结/" rel="next" title="Android内存泄漏总结">
+                <i class="fa fa-chevron-left"></i> Android内存泄漏总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/07/Binder机制及AIDL使用/" rel="prev" title="Binder机制及AIDL使用">
+                Binder机制及AIDL使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Winner Liu" />
+            
+              <p class="site-author-name" itemprop="name">Winner Liu</p>
+              <p class="site-description motion-element" itemprop="description">燃烧吧，我的小宇宙！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、-lt-include-gt"><span class="nav-number">1.</span> <span class="nav-text">一、<include/></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、-lt-merge-gt"><span class="nav-number">2.</span> <span class="nav-text">二、<merge/></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、ViewStub"><span class="nav-number">3.</span> <span class="nav-text">三、ViewStub</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义ViewStub布局文件"><span class="nav-number">3.1.</span> <span class="nav-text">定义ViewStub布局文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加载ViewStub布局文件"><span class="nav-number">3.2.</span> <span class="nav-text">加载ViewStub布局文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、小结"><span class="nav-number">4.</span> <span class="nav-text">四、小结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Include源码"><span class="nav-number">4.1.</span> <span class="nav-text">Include源码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Merge源码"><span class="nav-number">4.1.1.</span> <span class="nav-text">Merge源码</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Winner Liu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,Binder,AIDL," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Binder原理1、概述Android系统中，涉及到多进程间的通信底层都是依赖于Binder IPC机制。例如当进程A中的Activity要向进程B中的Service通信，这便需要依赖于Binder IPC。不仅于此，整个Android系统架构中，大量采用了Binder机制作为IPC（进程间通信）方案。
+当然也存在部分其他的IPC方式，如管道、SystemV、Socket等。那么Android为什">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Binder机制及AIDL使用">
+<meta property="og:url" content="http://yoursite.com/2018/06/07/Binder机制及AIDL使用/index.html">
+<meta property="og:site_name" content="WinnerCode">
+<meta property="og:description" content="Binder原理1、概述Android系统中，涉及到多进程间的通信底层都是依赖于Binder IPC机制。例如当进程A中的Activity要向进程B中的Service通信，这便需要依赖于Binder IPC。不仅于此，整个Android系统架构中，大量采用了Binder机制作为IPC（进程间通信）方案。
+当然也存在部分其他的IPC方式，如管道、SystemV、Socket等。那么Android为什">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3985563-a3722ee387793114.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3985563-5ff2c4816543c433.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3985563-727dd63017d2113b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3985563-4ea35902ebf6fa51.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3985563-53d6a0fdeafefa74.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-06-07T14:58:59.616Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Binder机制及AIDL使用">
+<meta name="twitter:description" content="Binder原理1、概述Android系统中，涉及到多进程间的通信底层都是依赖于Binder IPC机制。例如当进程A中的Activity要向进程B中的Service通信，这便需要依赖于Binder IPC。不仅于此，整个Android系统架构中，大量采用了Binder机制作为IPC（进程间通信）方案。
+当然也存在部分其他的IPC方式，如管道、SystemV、Socket等。那么Android为什">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3985563-a3722ee387793114.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/07/Binder机制及AIDL使用/"/>
+
+
+
+
+
+  <title>Binder机制及AIDL使用 | WinnerCode</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?642f81466b73ae68d2149c1678952ac8";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WinnerCode</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/07/Binder机制及AIDL使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Winner Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WinnerCode">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Binder机制及AIDL使用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-07T22:57:33+08:00">
+                2018-06-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android高级/" itemprop="url" rel="index">
+                    <span itemprop="name">Android高级</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Binder原理"><a href="#Binder原理" class="headerlink" title="Binder原理"></a>Binder原理</h2><h3 id="1、概述"><a href="#1、概述" class="headerlink" title="1、概述"></a>1、概述</h3><p>Android系统中，涉及到多进程间的通信底层都是依赖于Binder IPC机制。例如当进程A中的Activity要向进程B中的Service通信，这便需要依赖于Binder IPC。不仅于此，整个Android系统架构中，大量采用了Binder机制作为IPC（进程间通信）方案。</p>
+<p>当然也存在部分其他的IPC方式，如管道、SystemV、Socket等。那么Android为什么不使用这些原有的技术，而是要使开发一种新的叫Binder的进程间通信机制呢？</p>
+<h4 id="为什么要使用Binder？"><a href="#为什么要使用Binder？" class="headerlink" title="为什么要使用Binder？"></a>为什么要使用Binder？</h4><p><strong>性能方面</strong></p>
+<p>在移动设备上（性能受限制的设备，比如要省电），广泛地使用跨进程通信对通信机制的性能有严格的要求，Binder相对出传统的Socket方式，更加高效。Binder数据拷贝只需要一次，而管道、消息队列、Socket都需要2次，共享内存方式一次内存拷贝都不需要，但实现方式又比较复杂。</p>
+<p><strong>安全方面</strong></p>
+<p>传统的进程通信方式对于通信双方的身份并没有做出严格的验证，比如Socket通信ip地址是客户端手动填入，很容易进行伪造，而Binder机制从协议本身就支持对通信双方做身份校检，因而大大提升了安全性。</p>
+<h3 id="2、-Binder"><a href="#2、-Binder" class="headerlink" title="2、 Binder"></a>2、 Binder</h3><h4 id="IPC原理"><a href="#IPC原理" class="headerlink" title="IPC原理"></a>IPC原理</h4><p>从进程角度来看IPC机制</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3985563-a3722ee387793114.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<p>每个Android的进程，只能运行在自己进程所拥有的虚拟地址空间。对应一个4GB的虚拟地址空间，其中3GB是用户空间，1GB是内核空间，当然内核空间的大小是可以通过参数配置调整的。对于用户空间，不同进程之间彼此是不能共享的，而内核空间却是可共享的。Client进程向Server进程通信，恰恰是利用进程间可共享的内核内存空间来完成底层通信工作的，Client端与Server端进程往往采用ioctl等方法跟内核空间的驱动进行交互。</p>
+<h4 id="Binder原理-1"><a href="#Binder原理-1" class="headerlink" title="Binder原理"></a>Binder原理</h4><p>Binder通信采用C/S架构，从组件视角来说，包含Client、Server、ServiceManager以及binder驱动，其中ServiceManager用于管理系统中的各种服务。架构图如下所示：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3985563-5ff2c4816543c433.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<p><strong>Binder通信的四个角色</strong></p>
+<p><strong>Client进程</strong>：使用服务的进程。</p>
+<p><strong>Server进程</strong>：提供服务的进程。</p>
+<p><strong>ServiceManager进程</strong>：ServiceManager的作用是将字符形式的Binder名字转化成Client中对该Binder的引用，使得Client能够通过Binder名字获得对Server中Binder实体的引用。</p>
+<p><strong>Binder驱动</strong>：驱动负责进程之间Binder通信的建立，Binder在进程之间的传递，Binder引用计数管理，数据包在进程之间的传递和交互等一系列底层支持。</p>
+<p><strong>Binder运行机制</strong></p>
+<p>图中Client/Server/ServiceManage之间的相互通信都是基于Binder机制。既然基于Binder机制通信，那么同样也是C/S架构，则图中的3大步骤都有相应的Client端与Server端。</p>
+<p><strong>注册服务(addService)</strong>：Server进程要先注册Service到ServiceManager。该过程：Server是客户端，ServiceManager是服务端。</p>
+<p><strong>获取服务(getService)</strong>：Client进程使用某个Service前，须先向ServiceManager中获取相应的Service。该过程：Client是客户端，ServiceManager是服务端。</p>
+<p><strong>使用服务</strong>：Client根据得到的Service信息建立与Service所在的Server进程通信的通路，然后就可以直接与Service交互。该过程：client是客户端，server是服务端。</p>
+<p>图中的Client,Server,Service Manager之间交互都是虚线表示，是由于它们彼此之间不是直接交互的，而是都通过与Binder驱动进行交互的，从而实现IPC通信方式。其中Binder驱动位于内核空间，Client,Server,Service Manager位于用户空间。Binder驱动和Service Manager可以看做是Android平台的基础架构，而Client和Server是Android的应用层，开发人员只需自定义实现client、Server端，借助Android的基本平台架构便可以直接进行IPC通信。</p>
+<p><strong>Binder运行的实例解释</strong></p>
+<p>首先我们看看我们的程序跨进程调用系统服务的简单示例，实现浮动窗口部分代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//获取WindowManager服务引用</span></div><div class="line">WindowManager wm = (WindowManager)getSystemService(getApplication().WINDOW_SERVICE);  </div><div class="line"><span class="comment">//布局参数layoutParams相关设置略...</span></div><div class="line">View view=LayoutInflater.from(getApplication()).inflate(R.layout.float_layout, <span class="keyword">null</span>);  </div><div class="line"><span class="comment">//添加view</span></div><div class="line">wm.addView(view, layoutParams);</div></pre></td></tr></table></figure>
+<p><strong>注册服务(addService)：</strong>在Android开机启动过程中，Android会初始化系统的各种Service，并将这些Service向ServiceManager注册（即让ServiceManager管理）。这一步是系统自动完成的。</p>
+<p><strong>获取服务(getService)：</strong>客户端想要得到具体的Service直接向ServiceManager要即可。客户端首先向ServiceManager查询得到具体的Service引用，通常是Service引用的代理对象，对数据进行一些处理操作。即第2行代码中，得到的wm是WindowManager对象的引用。</p>
+<p><strong>使用服务：</strong>通过这个引用向具体的服务端发送请求，服务端执行完成后就返回。即第6行调用WindowManager的addView函数，将触发远程调用，调用的是运行在systemServer进程中的WindowManager的addView函数。</p>
+<p><strong>使用服务的具体执行过程</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3985563-727dd63017d2113b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<ol>
+<li>client通过获得一个server的代理接口，对server进行调用。</li>
+<li>代理接口中定义的方法与server中定义的方法是一一对应的。</li>
+<li>client调用某个代理接口中的方法时，代理接口的方法会将client传递的参数打包成Parcel对象。</li>
+<li>代理接口将Parcel发送给内核中的binder driver。</li>
+<li>server会读取binder driver中的请求数据，如果是发送给自己的，解包Parcel对象，处理并将结果返回。</li>
+<li>整个的调用过程是一个同步过程，在server处理的时候，client会block住。<strong>因此client调用过程不应在主线程。</strong></li>
+</ol>
+<h2 id="AIDL的使用"><a href="#AIDL的使用" class="headerlink" title="AIDL的使用"></a>AIDL的使用</h2><h3 id="1-AIDL的简介"><a href="#1-AIDL的简介" class="headerlink" title="1.AIDL的简介"></a>1.AIDL的简介</h3><p>AIDL (Android Interface Definition Language) 是一种接口定义语言，用于生成可以在Android设备上两个进程之间进行进程间通信(interprocess communication, IPC)的代码。如果在一个进程中（例如Activity）要调用另一个进程中（例如Service）对象的操作，就可以使用AIDL生成可序列化的参数，来完成进程间通信。</p>
+<p><strong>简言之，AIDL能够实现进程间通信，其内部是通过Binder机制来实现的，后面会具体介绍，现在先介绍AIDL的使用。</strong></p>
+<h3 id="2-AIDL的具体使用"><a href="#2-AIDL的具体使用" class="headerlink" title="2.AIDL的具体使用"></a>2.AIDL的具体使用</h3><p>AIDL的实现一共分为三部分，一部分是客户端，调用远程服务。一部分是服务端，提供服务。最后一部分，也是最关键的是AIDL接口，用来传递的参数，提供进程间通信。</p>
+<p>先在服务端创建AIDL部分代码。</p>
+<p><strong>AIDL文件</strong><br>通过如下方式新建一个AIDL文件</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3985563-4ea35902ebf6fa51.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<p><strong>默认生成格式</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">IBookManager</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Demonstrates some basic types that you can use as parameters</div><div class="line">     * and return values in AIDL.</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">basicTypes</span><span class="params">(<span class="keyword">int</span> anInt, <span class="keyword">long</span> aLong, <span class="keyword">boolean</span> aBoolean, <span class="keyword">float</span> aFloat,</span></span></div><div class="line">            <span class="keyword">double</span> aDouble, String aString);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>默认如下格式，由于本例要操作Book类，实现两个方法，添加书本和返回书本列表。</p>
+<p><strong>定义一个Book类，实现Parcelable接口。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Book</span> <span class="keyword">implements</span> <span class="title">Parcelable</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span> bookId;</div><div class="line">    <span class="keyword">public</span> String bookName;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Book</span><span class="params">()</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Book</span><span class="params">(<span class="keyword">int</span> bookId, String bookName)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.bookId = bookId;</div><div class="line">        <span class="keyword">this</span>.bookName = bookName;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getBookId</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> bookId;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBookId</span><span class="params">(<span class="keyword">int</span> bookId)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.bookId = bookId;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getBookName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> bookName;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBookName</span><span class="params">(String bookName)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.bookName = bookName;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">describeContents</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeToParcel</span><span class="params">(Parcel dest, <span class="keyword">int</span> flags)</span> </span>&#123;</div><div class="line">        dest.writeInt(<span class="keyword">this</span>.bookId);</div><div class="line">        dest.writeString(<span class="keyword">this</span>.bookName);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">Book</span><span class="params">(Parcel in)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.bookId = in.readInt();</div><div class="line">        <span class="keyword">this</span>.bookName = in.readString();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Parcelable.Creator&lt;Book&gt; CREATOR = <span class="keyword">new</span> Parcelable.Creator&lt;Book&gt;() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> Book <span class="title">createFromParcel</span><span class="params">(Parcel source)</span> </span>&#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Book(source);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="keyword">public</span> Book[] newArray(<span class="keyword">int</span> size) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Book[size];</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>由于AIDL只支持数据类型:基本类型（int,long,char,boolean等）,String,CharSequence,List,Map，其他类型必须使用import导入，即使它们可能在同一个包里，比如上面的Book。</p>
+<p><strong>最终IBookManager.aidl 的实现</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Declare any non-default types here with import statements</span></div><div class="line"><span class="keyword">import</span> com.lvr.aidldemo.Book;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">IBookManager</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Demonstrates some basic types that you can use as parameters</div><div class="line">     * and return values in AIDL.</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">basicTypes</span><span class="params">(<span class="keyword">int</span> anInt, <span class="keyword">long</span> aLong, <span class="keyword">boolean</span> aBoolean, <span class="keyword">float</span> aFloat,</span></span></div><div class="line">            <span class="keyword">double</span> aDouble, String aString);</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">addBook</span><span class="params">(in Book book)</span></span>;</div><div class="line"></div><div class="line">    <span class="function">List&lt;Book&gt; <span class="title">getBookList</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>注意：如果自定义的Parcelable对象，必须创建一个和它同名的AIDL文件，并在其中声明它为parcelable类型。</strong></p>
+<p><strong>Book.aidl</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Book.aidl</span></div><div class="line"><span class="keyword">package</span> com.lvr.aidldemo;</div><div class="line"></div><div class="line">parcelable Book;</div></pre></td></tr></table></figure>
+<p>以上就是AIDL部分的实现，一共三个文件。</p>
+<p>然后Make Project ，SDK为自动为我们生成对应的Binder类。</p>
+<p>在如下路径下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3985563-53d6a0fdeafefa74.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<p>其中该接口中有个重要的内部类Stub ，继承了Binder 类，同时实现了IBookManager接口。<br>这个内部类是接下来的关键内容。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Stub</span> <span class="keyword">extends</span> <span class="title">android</span>.<span class="title">os</span>.<span class="title">Binder</span> <span class="keyword">implements</span> <span class="title">com</span>.<span class="title">lvr</span>.<span class="title">aidldemo</span>.<span class="title">IBookManager</span></span>&#123;&#125;</div></pre></td></tr></table></figure>
+<p><strong>服务端</strong><br>服务端首先要创建一个Service用来监听客户端的连接请求。然后在Service中实现Stub 类，并定义接口中方法的具体实现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//实现了AIDL的抽象函数</span></div><div class="line">    <span class="keyword">private</span> IBookManager.Stub mbinder = <span class="keyword">new</span> IBookManager.Stub() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">basicTypes</span><span class="params">(<span class="keyword">int</span> anInt, <span class="keyword">long</span> aLong, <span class="keyword">boolean</span> aBoolean, <span class="keyword">float</span> aFloat, <span class="keyword">double</span> aDouble, String aString)</span> <span class="keyword">throws</span> RemoteException </span>&#123;</div><div class="line">            <span class="comment">//什么也不做</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addBook</span><span class="params">(Book book)</span> <span class="keyword">throws</span> RemoteException </span>&#123;</div><div class="line">            <span class="comment">//添加书本</span></div><div class="line">            <span class="keyword">if</span>(!mBookList.contains(book))&#123;</div><div class="line">                mBookList.add(book);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> List&lt;Book&gt; <span class="title">getBookList</span><span class="params">()</span> <span class="keyword">throws</span> RemoteException </span>&#123;</div><div class="line">            <span class="keyword">return</span> mBookList;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div></pre></td></tr></table></figure>
+<p>当客户端连接服务端，服务端就会调用如下方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> IBinder <span class="title">onBind</span><span class="params">(Intent intent)</span> </span>&#123;</div><div class="line">       <span class="keyword">return</span> mbinder;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>就会把Stub实现对象返回给客户端，该对象是个Binder对象，可以实现进程间通信。<br>本例就不真实模拟两个应用之间的通信，而是让Service另外开启一个进程来模拟进程间通信。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;service</div><div class="line">           android:name=".MyService"</div><div class="line">           android:process=":remote"&gt;</div><div class="line">           &lt;intent-filter&gt;</div><div class="line">               &lt;category android:name="android.intent.category.DEFAULT"/&gt;</div><div class="line">               &lt;action android:name="com.lvr.aidldemo.MyService"/&gt;</div><div class="line">           &lt;/intent-filter&gt;</div><div class="line">       &lt;/service&gt;</div></pre></td></tr></table></figure>
+<p><code>android:process=&quot;:remote&quot;</code>设置为另一个进程。<code>&lt;action android:name=&quot;com.lvr.aidldemo.MyService&quot;/&gt;</code>是为了能让其他apk隐式bindService。<strong>通过隐式调用的方式来连接service，需要把category设为default，这是因为，隐式调用的时候，intent中的category默认会被设置为default。</strong></p>
+<p><strong>客户端</strong></p>
+<p><strong>首先将服务端工程中的aidl文件夹下的内容整个拷贝到客户端工程的对应位置下，由于本例的使用在一个应用中，就不需要拷贝了，其他情况一定不要忘记这一步。</strong></p>
+<p>客户端需要做的事情比较简单，首先需要绑定服务端的Service。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Intent intentService = <span class="keyword">new</span> Intent();</div><div class="line">intentService.setAction(<span class="string">"com.lvr.aidldemo.MyService"</span>);</div><div class="line">intentService.setPackage(getPackageName());</div><div class="line">intentService.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</div><div class="line">MyClient.<span class="keyword">this</span>.bindService(intentService, mServiceConnection, BIND_AUTO_CREATE);</div><div class="line">Toast.makeText(getApplicationContext(),<span class="string">"绑定了服务"</span>,Toast.LENGTH_SHORT).show();</div></pre></td></tr></table></figure>
+<p>将服务端返回的Binder对象转换成AIDL接口所属的类型，接着就可以调用AIDL中的方法了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span>(mIBookManager!=<span class="keyword">null</span>)&#123;</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">          mIBookManager.addBook(<span class="keyword">new</span> Book(<span class="number">18</span>,<span class="string">"新添加的书"</span>));</div><div class="line">          Toast.makeText(getApplicationContext(),mIBookManager.getBookList().size()+<span class="string">""</span>,Toast.LENGTH_SHORT).show();</div><div class="line">      &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</div><div class="line">          e.printStackTrace();</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<h3 id="3-AIDL的工作原理"><a href="#3-AIDL的工作原理" class="headerlink" title="3.AIDL的工作原理"></a>3.AIDL的工作原理</h3><p>Binder机制的运行主要包括三个部分：注册服务、获取服务和使用服务。<br>其中注册服务和获取服务的流程涉及C的内容，由于个人能力有限，就不予介绍了。</p>
+<p>本篇文章主要介绍使用服务时,AIDL的工作原理。</p>
+<h4 id="①-Binder对象的获取"><a href="#①-Binder对象的获取" class="headerlink" title="①.Binder对象的获取"></a>①.Binder对象的获取</h4><p>Binder是实现跨进程通信的基础，那么Binder对象在服务端和客户端是共享的，是同一个Binder对象。在客户端通过Binder对象获取实现了IInterface接口的对象来调用远程服务，然后通过Binder来实现参数传递。</p>
+<p>那么如何维护实现了IInterface接口的对象和获取Binder对象呢？</p>
+<p><strong>服务端获取Binder对象并保存IInterface接口对象</strong><br>Binder中两个关键方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"> <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Binder</span> <span class="title">implement</span> <span class="title">IBinder</span></span>&#123;</div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">attachInterface</span><span class="params">(IInterface plus, String descriptor)</span></span></div><div class="line">        IInterface <span class="title">queryLocalInterface</span><span class="params">(Stringdescriptor)</span> <span class="comment">//从IBinder中继承而来</span></div><div class="line">      ..........................</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Binder具有被跨进程传输的能力是因为它实现了IBinder接口。系统会为每个实现了该接口的对象提供跨进程传输，这是系统给我们的一个很大的福利。</p>
+<p><strong>Binder具有的完成特定任务的能力是通过它的IInterface的对象获得的</strong>，我们可以简单理解attachInterface方法会将（descriptor，plus）作为（key,value）对存入Binder对象中的一个Map<string,iinterface>对象中，Binder对象可通过attachInterface方法持有一个IInterface对象（即plus）的引用，并依靠它获得完成特定任务的能力。queryLocalInterface方法可以认为是根据key值（即参数 descriptor）查找相应的IInterface对象。</string,iinterface></p>
+<p>在服务端进程，通过实现<code>private IBookManager.Stub mbinder = new IBookManager.Stub() {}</code>抽象类，获得Binder对象。<br>并保存了IInterface对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">Stub</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line"><span class="keyword">this</span>.attachInterface(<span class="keyword">this</span>, DESCRIPTOR);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>客户端获取Binder对象并获取IInterface接口对象</strong></p>
+<p>通过bindService获得Binder对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">MyClient.<span class="keyword">this</span>.bindService(intentService, mServiceConnection, BIND_AUTO_CREATE);</div></pre></td></tr></table></figure>
+<p>然后通过Binder对象获得IInterface对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> ServiceConnection mServiceConnection = <span class="keyword">new</span> ServiceConnection() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceConnected</span><span class="params">(ComponentName name, IBinder binder)</span> </span>&#123;</div><div class="line">            <span class="comment">//通过服务端onBind方法返回的binder对象得到IBookManager的实例，得到实例就可以调用它的方法了</span></div><div class="line">            mIBookManager = IBookManager.Stub.asInterface(binder);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceDisconnected</span><span class="params">(ComponentName name)</span> </span>&#123;</div><div class="line">            mIBookManager = <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div></pre></td></tr></table></figure>
+<p>其中<code>asInterface(binder)</code>方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> com.lvr.aidldemo.<span class="function">IBookManager <span class="title">asInterface</span><span class="params">(android.os.IBinder obj)</span></span></div><div class="line">&#123;</div><div class="line"><span class="keyword">if</span> ((obj==<span class="keyword">null</span>)) &#123;</div><div class="line"><span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">&#125;</div><div class="line">android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR);</div><div class="line"><span class="keyword">if</span> (((iin!=<span class="keyword">null</span>)&amp;&amp;(iin <span class="keyword">instanceof</span> com.lvr.aidldemo.IBookManager))) &#123;</div><div class="line"><span class="keyword">return</span> ((com.lvr.aidldemo.IBookManager)iin);</div><div class="line">&#125;</div><div class="line"><span class="keyword">return</span> <span class="keyword">new</span> com.lvr.aidldemo.IBookManager.Stub.Proxy(obj);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>先通过<code>queryLocalInterface(DESCRIPTOR);</code>查找到对应的IInterface对象，然后判断对象的类型，如果是同一个进程调用则返回IBookManager对象，由于是跨进程调用则返回Proxy对象，即Binder类的代理对象。</p>
+<h4 id="②-调用服务端方法"><a href="#②-调用服务端方法" class="headerlink" title="②.调用服务端方法"></a>②.调用服务端方法</h4><p>获得了Binder类的代理对象，并且通过代理对象获得了IInterface对象，那么就可以调用接口的具体实现方法了，来实现调用服务端方法的目的。</p>
+<p>以addBook方法为例，调用该方法后，客户端线程挂起，等待唤醒：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addBook</span><span class="params">(com.lvr.aidldemo.Book book)</span> <span class="keyword">throws</span> android.os.RemoteException</span></div><div class="line">&#123;</div><div class="line">..........</div><div class="line"><span class="comment">//第一个参数：识别调用哪一个方法的ID</span></div><div class="line"><span class="comment">//第二个参数：Book的序列化传入数据</span></div><div class="line"><span class="comment">//第三个参数：调用方法后返回的数据</span></div><div class="line"><span class="comment">//最后一个不用管</span></div><div class="line">mRemote.transact(Stub.TRANSACTION_addBook, _data, _reply, <span class="number">0</span>);</div><div class="line">_reply.readException();</div><div class="line">&#125;</div><div class="line">..........</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>省略部分主要完成对添加的Book对象进行序列化工作，然后调用<code>transact</code>方法。</p>
+<p>Proxy对象中的transact调用发生后，会引起系统的注意，系统意识到Proxy对象想找它的真身Binder对象（系统其实一直存着Binder和Proxy的对应关系）。于是系统将这个请求中的数据转发给Binder对象，Binder对象将会在onTransact中收到Proxy对象传来的数据，于是它从data中取出客户端进程传来的数据，又根据第一个参数确定想让它执行添加书本操作，于是它就执行了响应操作，并把结果写回reply。代码概略如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">case</span> TRANSACTION_addBook:</div><div class="line">&#123;</div><div class="line">data.enforceInterface(DESCRIPTOR);</div><div class="line">com.lvr.aidldemo.Book _arg0;</div><div class="line"><span class="keyword">if</span> ((<span class="number">0</span>!=data.readInt())) &#123;</div><div class="line">_arg0 = com.lvr.aidldemo.Book.CREATOR.createFromParcel(data);</div><div class="line">&#125;</div><div class="line"><span class="keyword">else</span> &#123;</div><div class="line">_arg0 = <span class="keyword">null</span>;</div><div class="line">&#125;</div><div class="line"><span class="comment">//这里调用服务端实现的addBook方法</span></div><div class="line"><span class="keyword">this</span>.addBook(_arg0);</div><div class="line">reply.writeNoException();</div><div class="line"><span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后在<code>transact</code>方法获得<code>_reply</code>并返回结果，本例中的addList方法没有返回值。</p>
+<p>客户端线程被唤醒。<strong>因此调用服务端方法时，应开启子线程，防止UI线程堵塞，导致ANR。</strong></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/wechat-qcode.jpg" alt="Winner Liu wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Binder/" rel="tag"># Binder</a>
+          
+            <a href="/tags/AIDL/" rel="tag"># AIDL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/07/Android布局优化之include、merge、ViewStub的使用/" rel="next" title="Android布局优化之include、merge、ViewStub的使用">
+                <i class="fa fa-chevron-left"></i> Android布局优化之include、merge、ViewStub的使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/07/Parcelable和Serializable的区别/" rel="prev" title="Parcelable和Serializable的区别">
+                Parcelable和Serializable的区别 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Winner Liu" />
+            
+              <p class="site-author-name" itemprop="name">Winner Liu</p>
+              <p class="site-description motion-element" itemprop="description">燃烧吧，我的小宇宙！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Binder原理"><span class="nav-number">1.</span> <span class="nav-text">Binder原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、概述"><span class="nav-number">1.1.</span> <span class="nav-text">1、概述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么要使用Binder？"><span class="nav-number">1.1.1.</span> <span class="nav-text">为什么要使用Binder？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、-Binder"><span class="nav-number">1.2.</span> <span class="nav-text">2、 Binder</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#IPC原理"><span class="nav-number">1.2.1.</span> <span class="nav-text">IPC原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Binder原理-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">Binder原理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AIDL的使用"><span class="nav-number">2.</span> <span class="nav-text">AIDL的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-AIDL的简介"><span class="nav-number">2.1.</span> <span class="nav-text">1.AIDL的简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-AIDL的具体使用"><span class="nav-number">2.2.</span> <span class="nav-text">2.AIDL的具体使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-AIDL的工作原理"><span class="nav-number">2.3.</span> <span class="nav-text">3.AIDL的工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#①-Binder对象的获取"><span class="nav-number">2.3.1.</span> <span class="nav-text">①.Binder对象的获取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#②-调用服务端方法"><span class="nav-number">2.3.2.</span> <span class="nav-text">②.调用服务端方法</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Winner Liu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

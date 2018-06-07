@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,Animator," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、Android 动画分类总的来说，Android动画可以分为两类，最初的传统动画和Android3.0 之后出现的属性动画；
+传统动画又包括 帧动画（Frame Animation）和补间动画（Tweened Animation）。
+二、传统动画帧动画帧动画是最容易实现的一种动画，这种动画更多的依赖于完善的UI资源，他的原理就是将一张张单独的图片连贯的进行播放，从而在视觉上产生一种动画的效果；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android动画总结">
+<meta property="og:url" content="http://yoursite.com/2018/06/07/Android动画总结/index.html">
+<meta property="og:site_name" content="WinnerCode">
+<meta property="og:description" content="一、Android 动画分类总的来说，Android动画可以分为两类，最初的传统动画和Android3.0 之后出现的属性动画；
+传统动画又包括 帧动画（Frame Animation）和补间动画（Tweened Animation）。
+二、传统动画帧动画帧动画是最容易实现的一种动画，这种动画更多的依赖于完善的UI资源，他的原理就是将一张张单独的图片连贯的进行播放，从而在视觉上产生一种动画的效果；">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1115031-b52487cb6b97f911.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1115031-743288fa3be134ea.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1115031-80301bbb0ae884b2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1115031-741c714c3ef5fa84.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1115031-dbbb2e4aca44b0e7.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1115031-9e26dde319ebaae7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1115031-6864a7fffbc80884.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1115031-10bb818b5584da5e.gif?imageMogr2/auto-orient/strip">
+<meta property="og:updated_time" content="2018-06-07T14:44:37.278Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android动画总结">
+<meta name="twitter:description" content="一、Android 动画分类总的来说，Android动画可以分为两类，最初的传统动画和Android3.0 之后出现的属性动画；
+传统动画又包括 帧动画（Frame Animation）和补间动画（Tweened Animation）。
+二、传统动画帧动画帧动画是最容易实现的一种动画，这种动画更多的依赖于完善的UI资源，他的原理就是将一张张单独的图片连贯的进行播放，从而在视觉上产生一种动画的效果；">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1115031-b52487cb6b97f911.gif?imageMogr2/auto-orient/strip">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/07/Android动画总结/"/>
+
+
+
+
+
+  <title>Android动画总结 | WinnerCode</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?642f81466b73ae68d2149c1678952ac8";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WinnerCode</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/07/Android动画总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Winner Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WinnerCode">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android动画总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-07T22:44:06+08:00">
+                2018-06-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Android基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="一、Android-动画分类"><a href="#一、Android-动画分类" class="headerlink" title="一、Android 动画分类"></a>一、Android 动画分类</h2><p>总的来说，Android动画可以分为两类，最初的<strong>传统动画</strong>和Android3.0 之后出现的<strong>属性动画</strong>；</p>
+<p>传统动画又包括 帧动画（Frame Animation）和补间动画（Tweened Animation）。</p>
+<h2 id="二、传统动画"><a href="#二、传统动画" class="headerlink" title="二、传统动画"></a>二、传统动画</h2><h3 id="帧动画"><a href="#帧动画" class="headerlink" title="帧动画"></a>帧动画</h3><p>帧动画是最容易实现的一种动画，这种动画更多的依赖于完善的UI资源，他的原理就是将一张张单独的图片连贯的进行播放，从而在视觉上产生一种动画的效果；有点类似于某些软件制作gif动画的方式。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1115031-b52487cb6b97f911.gif?imageMogr2/auto-orient/strip" alt=""></p>
+<p>如上图中的京东加载动画，代码要做的事情就是把一幅幅的图片按顺序显示，造成动画的视觉效果。</p>
+<p><strong>京东动画实现</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">animation-list</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span></span></div><div class="line">        <span class="attr">android:drawable</span>=<span class="string">"@drawable/a_0"</span></div><div class="line">        <span class="attr">android:duration</span>=<span class="string">"100"</span> /&gt;</div><div class="line">    <span class="tag">&lt;<span class="name">item</span></span></div><div class="line">        <span class="attr">android:drawable</span>=<span class="string">"@drawable/a_1"</span></div><div class="line">        <span class="attr">android:duration</span>=<span class="string">"100"</span> /&gt;</div><div class="line">    <span class="tag">&lt;<span class="name">item</span></span></div><div class="line">        <span class="attr">android:drawable</span>=<span class="string">"@drawable/a_2"</span></div><div class="line">        <span class="attr">android:duration</span>=<span class="string">"100"</span> /&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">animation-list</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(@Nullable Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_frame_animation);</div><div class="line">        ImageView animationImg1 = (ImageView) findViewById(R.id.animation1);</div><div class="line">        animationImg1.setImageResource(R.drawable.frame_anim1);</div><div class="line">        AnimationDrawable animationDrawable1 = (AnimationDrawable) animationImg1.getDrawable();</div><div class="line">        animationDrawable1.start();</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p><em>可以说，图片资源决定了这种方式可以实现怎样的动画</em></p>
+<p><em>在有些代码中，我们还会看到android：oneshot=”false” ，这个oneshot 的含义就是动画执行一次（true）还是循环执行多次。</em></p>
+<p>这里其他几个动画实现方式都是一样，无非就是图片资源的差异。</p>
+<h3 id="补间动画"><a href="#补间动画" class="headerlink" title="补间动画"></a>补间动画</h3><p>补间动画又可以分为四种形式，分别是 <strong>alpha（淡入淡出），translate（位移），scale（缩放大小），rotate（旋转）</strong>。<br>补间动画的实现，一般会采用xml 文件的形式；代码会更容易书写和阅读，同时也更容易复用。</p>
+<h4 id="XML-实现"><a href="#XML-实现" class="headerlink" title="XML 实现"></a>XML 实现</h4><p>首先，在res/anim/ 文件夹下定义如下的动画实现方式</p>
+<p><strong>alpha_anim.xml 动画实现</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">alpha</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:duration</span>=<span class="string">"1000"</span></div><div class="line">    <span class="attr">android:fromAlpha</span>=<span class="string">"1.0"</span></div><div class="line">    <span class="attr">android:interpolator</span>=<span class="string">"@android:anim/accelerate_decelerate_interpolator"</span></div><div class="line">    <span class="attr">android:toAlpha</span>=<span class="string">"0.0"</span> /&gt;</div></pre></td></tr></table></figure>
+<p><strong>scale.xml 动画实现</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">scale</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:duration</span>=<span class="string">"1000"</span></div><div class="line">    <span class="attr">android:fromXScale</span>=<span class="string">"0.0"</span></div><div class="line">    <span class="attr">android:fromYScale</span>=<span class="string">"0.0"</span></div><div class="line">    <span class="attr">android:pivotX</span>=<span class="string">"50%"</span></div><div class="line">    <span class="attr">android:pivotY</span>=<span class="string">"50%"</span></div><div class="line">    <span class="attr">android:toXScale</span>=<span class="string">"1.0"</span></div><div class="line">    <span class="attr">android:toYScale</span>=<span class="string">"1.0"</span>/&gt;</div></pre></td></tr></table></figure>
+<p>然后，在Activity中 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.alpha_anim);</div><div class="line">img = (ImageView) findViewById(R.id.img);</div><div class="line">img.startAnimation(animation);</div></pre></td></tr></table></figure>
+<p>这样就可以实现ImageView alpha 透明变化的动画效果。</p>
+<p>也可以使用set 标签将多个动画组合（代码源自Android SDK API）</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">set</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:interpolator</span>=<span class="string">"@[package:]anim/interpolator_resource"</span></div><div class="line">    <span class="attr">android:shareInterpolator</span>=<span class="string">[</span>"<span class="attr">true</span>" | "<span class="attr">false</span>"] &gt;</div><div class="line">    <span class="tag">&lt;<span class="name">alpha</span></span></div><div class="line">        <span class="attr">android:fromAlpha</span>=<span class="string">"float"</span></div><div class="line">        <span class="attr">android:toAlpha</span>=<span class="string">"float"</span> /&gt;</div><div class="line">    <span class="tag">&lt;<span class="name">scale</span></span></div><div class="line">        <span class="attr">android:fromXScale</span>=<span class="string">"float"</span></div><div class="line">        <span class="attr">android:toXScale</span>=<span class="string">"float"</span></div><div class="line">        <span class="attr">android:fromYScale</span>=<span class="string">"float"</span></div><div class="line">        <span class="attr">android:toYScale</span>=<span class="string">"float"</span></div><div class="line">        <span class="attr">android:pivotX</span>=<span class="string">"float"</span></div><div class="line">        <span class="attr">android:pivotY</span>=<span class="string">"float"</span> /&gt;</div><div class="line">    <span class="tag">&lt;<span class="name">translate</span></span></div><div class="line">        <span class="attr">android:fromXDelta</span>=<span class="string">"float"</span></div><div class="line">        <span class="attr">android:toXDelta</span>=<span class="string">"float"</span></div><div class="line">        <span class="attr">android:fromYDelta</span>=<span class="string">"float"</span></div><div class="line">        <span class="attr">android:toYDelta</span>=<span class="string">"float"</span> /&gt;</div><div class="line">    <span class="tag">&lt;<span class="name">rotate</span></span></div><div class="line">        <span class="attr">android:fromDegrees</span>=<span class="string">"float"</span></div><div class="line">        <span class="attr">android:toDegrees</span>=<span class="string">"float"</span></div><div class="line">        <span class="attr">android:pivotX</span>=<span class="string">"float"</span></div><div class="line">        <span class="attr">android:pivotY</span>=<span class="string">"float"</span> /&gt;</div><div class="line">    <span class="tag">&lt;<span class="name">set</span>&gt;</span></div><div class="line">        ...</div><div class="line">    <span class="tag">&lt;/<span class="name">set</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">set</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>可以看到组合动画是可以嵌套使用的。</p>
+<p>各个动画属性的含义结合动画自身的特点应该很好理解，就不一一阐述了；这里主要说一下<strong>interpolator</strong> 和 <strong>pivot</strong>。</p>
+<blockquote>
+<p>Interpolator 主要作用是可以控制动画的变化速率 ，就是动画进行的快慢节奏。</p>
+</blockquote>
+<p>Android 系统已经为我们提供了一些Interpolator ，比如 accelerate_decelerate_interpolator，accelerate_interpolator等。更多的interpolator 及其含义可以在Android SDK 中查看。同时这个Interpolator也是可以自定义的，这个后面还会提到。</p>
+<blockquote>
+<p>pivot 决定了当前动画执行的参考位置</p>
+</blockquote>
+<p>pivot 这个属性主要是在translate 和 scale 动画中，这两种动画都牵扯到view 的“物理位置“发生变化，所以需要一个参考点。而pivotX和pivotY就共同决定了这个点；它的值可以是float或者是百分比数值。</p>
+<p>我们以pivotX为例，</p>
+<table>
+<thead>
+<tr>
+<th>pivotX取值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10</td>
+<td>距离动画所在view自身左边缘10像素</td>
+</tr>
+<tr>
+<td>10%</td>
+<td>距离动画所在view自身左边缘 的距离是整个view宽度的10%</td>
+</tr>
+<tr>
+<td>10%p</td>
+<td>距离动画所在view父控件左边缘的距离是整个view宽度的10%</td>
+</tr>
+</tbody>
+</table>
+<p>pivotY 也是相同的原理，只不过变成的纵向的位置。如果还是不明白可以参考<a href="https://github.com/REBOOTERS/AndroidAnimationExercise" target="_blank" rel="external">源码</a>，在Tweened Animation中结合seekbar的滑动观察rotate的变化理解。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1115031-743288fa3be134ea.gif?imageMogr2/auto-orient/strip" alt=""></p>
+<h4 id="Java-Code-实现"><a href="#Java-Code-实现" class="headerlink" title="Java Code  实现"></a>Java Code  实现</h4><p>有时候，动画的属性值可能需要动态的调整，这个时候使用xml 就不合适了，需要使用java代码实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">RotateAnimation</span><span class="params">()</span> </span>&#123;</div><div class="line">        animation = <span class="keyword">new</span> RotateAnimation(-deValue, deValue, Animation.RELATIVE_TO_SELF,</div><div class="line">                pxValue, Animation.RELATIVE_TO_SELF, pyValue);</div><div class="line">        animation.setDuration(timeValue);</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (keep.isChecked()) &#123;</div><div class="line">            animation.setFillAfter(<span class="keyword">true</span>);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            animation.setFillAfter(<span class="keyword">false</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (loop.isChecked()) &#123;</div><div class="line">            animation.setRepeatCount(-<span class="number">1</span>);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            animation.setRepeatCount(<span class="number">0</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (reverse.isChecked()) &#123;</div><div class="line">            animation.setRepeatMode(Animation.REVERSE);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            animation.setRepeatMode(Animation.RESTART);</div><div class="line">        &#125;</div><div class="line">        img.startAnimation(animation);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p><strong>这里animation.setFillAfter决定了动画在播放结束时是否保持最终的状态；animation.setRepeatCount和animation.setRepeatMode 决定了动画的重复次数及重复方式，具体细节可查看源码理解。</strong></p>
+<p>好了，传统动画的内容就说到这里了。</p>
+<h2 id="三、属性动画"><a href="#三、属性动画" class="headerlink" title="三、属性动画"></a>三、属性动画</h2><p>属性动画，顾名思义它是对于对象属性的动画。因此，所有补间动画的内容，都可以通过属性动画实现。</p>
+<h3 id="属性动画入门"><a href="#属性动画入门" class="headerlink" title="属性动画入门"></a>属性动画入门</h3><p>首先我们来看看如何用属性动画实现上面补间动画的效果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">RotateAnimation</span><span class="params">()</span> </span>&#123;</div><div class="line">    ObjectAnimator anim = ObjectAnimator.ofFloat(myView, <span class="string">"rotation"</span>, <span class="number">0f</span>, <span class="number">360f</span>);</div><div class="line">    anim.setDuration(<span class="number">1000</span>);</div><div class="line">    anim.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">AlpahAnimation</span><span class="params">()</span> </span>&#123;</div><div class="line">    ObjectAnimator anim = ObjectAnimator.ofFloat(myView, <span class="string">"alpha"</span>, <span class="number">1.0f</span>, <span class="number">0.8f</span>, <span class="number">0.6f</span>, <span class="number">0.4f</span>, <span class="number">0.2f</span>, <span class="number">0.0f</span>);</div><div class="line">    anim.setRepeatCount(-<span class="number">1</span>);</div><div class="line">    anim.setRepeatMode(ObjectAnimator.REVERSE);</div><div class="line">    anim.setDuration(<span class="number">2000</span>);</div><div class="line">    anim.start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这两个方法用属性动画的方式分别实现了旋转动画和淡入淡出动画，其中setDuration、setRepeatMode及setRepeatCount和补间动画中的概念是一样的。</p>
+<p>可以看到，属性动画貌似强大了许多，实现很方便，同时动画可变化的值也有了更多的选择，动画所能呈现的细节也更多。</p>
+<p>当然属性动画也是可以组合实现的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">                ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(myView, <span class="string">"alpha"</span>, <span class="number">1.0f</span>, <span class="number">0.5f</span>, <span class="number">0.8f</span>, <span class="number">1.0f</span>);</div><div class="line">                ObjectAnimator scaleXAnim = ObjectAnimator.ofFloat(myView, <span class="string">"scaleX"</span>, <span class="number">0.0f</span>, <span class="number">1.0f</span>);</div><div class="line">                ObjectAnimator scaleYAnim = ObjectAnimator.ofFloat(myView, <span class="string">"scaleY"</span>, <span class="number">0.0f</span>, <span class="number">2.0f</span>);</div><div class="line">                ObjectAnimator rotateAnim = ObjectAnimator.ofFloat(myView, <span class="string">"rotation"</span>, <span class="number">0</span>, <span class="number">360</span>);</div><div class="line">                ObjectAnimator transXAnim = ObjectAnimator.ofFloat(myView, <span class="string">"translationX"</span>, <span class="number">100</span>, <span class="number">400</span>);</div><div class="line">                ObjectAnimator transYAnim = ObjectAnimator.ofFloat(myView, <span class="string">"tranlsationY"</span>, <span class="number">100</span>, <span class="number">750</span>);</div><div class="line">                AnimatorSet set = <span class="keyword">new</span> AnimatorSet();</div><div class="line">                set.playTogether(alphaAnim, scaleXAnim, scaleYAnim, rotateAnim, transXAnim, transYAnim);</div><div class="line"><span class="comment">//                set.playSequentially(alphaAnim, scaleXAnim, scaleYAnim, rotateAnim, transXAnim, transYAnim);</span></div><div class="line">                set.setDuration(<span class="number">3000</span>);</div><div class="line">                set.start();</div></pre></td></tr></table></figure>
+<p>可以看到这些动画可以同时播放，或者是按序播放。</p>
+<h3 id="属性动画核心原理"><a href="#属性动画核心原理" class="headerlink" title="属性动画核心原理"></a>属性动画核心原理</h3><p>在上面实现属性动画的时候，我们反复的使用到了ObjectAnimator  这个类，这个类继承自ValueAnimator，使用这个类可以对任意对象的<strong>任意属性</strong>进行动画操作。而ValueAnimator是整个属性动画机制当中最核心的一个类；这点从下面的图片也可以看出。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1115031-80301bbb0ae884b2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>属性动画核心原理，此图来自于Android SDK API 文档。</p>
+<blockquote>
+<p>属性动画的运行机制是通过不断地对值进行操作来实现的，而初始值和结束值之间的动画过渡就是由ValueAnimator这个类来负责计算的。它的内部使用一种时间循环的机制来计算值与值之间的动画过渡，我们只需要将初始值和结束值提供给ValueAnimator，并且告诉它动画所需运行的时长，那么ValueAnimator就会自动帮我们完成从初始值平滑地过渡到结束值这样的效果。除此之外，ValueAnimator还负责管理动画的播放次数、播放模式、以及对动画设置监听器等。</p>
+</blockquote>
+<p>从上图我们可以了解到，通过duration、startPropertyValue和endPropertyValue 等值，我们就可以定义动画运行时长，初始值和结束值。然后通过start方法开始动画。<br>那么ValueAnimator 到底是怎样实现从初始值平滑过渡到结束值的呢？这个就是由TypeEvaluator 和TimeInterpolator 共同决定的。</p>
+<p>具体来说，<strong>TypeEvaluator 决定了动画如何从初始值过渡到结束值。</strong></p>
+<p><strong>TimeInterpolator 决定了动画从初始值过渡到结束值的节奏。</strong></p>
+<p>说的通俗一点，你每天早晨出门去公司上班，TypeEvaluator决定了你是坐公交、坐地铁还是骑车；而当你决定骑车后，TimeInterpolator决定了你一路上骑行的方式，你可以匀速的一路骑到公司，你也可以前半程骑得飞快，后半程骑得慢悠悠。</p>
+<p>如果，还是不理解，那么就看下面的代码吧。首先看一下下面的这两个gif动画，一个小球在屏幕上以 y=sin(x) 的数学函数轨迹运行，同时小球的颜色和半径也发生着变化，可以发现，两幅图动画变化的节奏也是不一样的。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1115031-741c714c3ef5fa84.gif?imageMogr2/auto-orient/strip" alt=""></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1115031-dbbb2e4aca44b0e7.gif?imageMogr2/auto-orient/strip" alt=""></p>
+<p><em>如果不考虑属性动画，这样的一个动画纯粹的使用Canvas+Handler的方式绘制也是有可能实现的。但是会复杂很多，而且加上各种线程，会带来很多意想不到的问题。</em></p>
+<p>这里就通过自定义属性动画的方式看看这个动画是如何实现的。</p>
+<h3 id="属性动画自定义实现"><a href="#属性动画自定义实现" class="headerlink" title="属性动画自定义实现"></a>属性动画自定义实现</h3><p>这个动画最关键的三点就是 运动轨迹、小球半径及颜色的变化；我们就从这三个方面展开。最后我们在结合Interpolator说一下TimeInterpolator的意义。</p>
+<h5 id="用TypeEvaluator-确定运动轨迹"><a href="#用TypeEvaluator-确定运动轨迹" class="headerlink" title="用TypeEvaluator 确定运动轨迹"></a>用TypeEvaluator 确定运动轨迹</h5><p>前面说了，TypeEvaluator决定了动画如何从初始值过渡到结束值。这个TypeEvaluator是个接口，我们可以实现这个接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PointSinEvaluator</span> <span class="keyword">implements</span> <span class="title">TypeEvaluator</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">evaluate</span><span class="params">(<span class="keyword">float</span> fraction, Object startValue, Object endValue)</span> </span>&#123;</div><div class="line">        Point startPoint = (Point) startValue;</div><div class="line">        Point endPoint = (Point) endValue;</div><div class="line">        <span class="keyword">float</span> x = startPoint.getX() + fraction * (endPoint.getX() - startPoint.getX());</div><div class="line"></div><div class="line">        <span class="keyword">float</span> y = (<span class="keyword">float</span>) (Math.sin(x * Math.PI / <span class="number">180</span>) * <span class="number">100</span>) + endPoint.getY() / <span class="number">2</span>;</div><div class="line">        Point point = <span class="keyword">new</span> Point(x, y);</div><div class="line">        <span class="keyword">return</span> point;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>PointSinEvaluator 继承了TypeEvaluator类，并实现了他唯一的方法evaluate；这个方法有三个参数，第一个参数fraction 代表当前动画完成的<strong>百分比</strong>，这个值是如何变化的后面还会提到；第二个和第三个参数代表动画的<strong>初始值和结束值</strong>。这里我们的逻辑很简单，x的值随着fraction 不断变化，并最终达到结束值；y的值就是当前x值所对应的sin(x) 值，然后用x 和 y 产生一个新的点（Point对象）返回。</p>
+<p>这样我们就可以使用这个PointSinEvaluator 生成属性动画的实例了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">Point startP = <span class="keyword">new</span> Point(RADIUS, RADIUS);<span class="comment">//初始值（起点）</span></div><div class="line">Point endP = <span class="keyword">new</span> Point(getWidth() - RADIUS, getHeight() - RADIUS);<span class="comment">//结束值（终点）</span></div><div class="line"><span class="keyword">final</span> ValueAnimator valueAnimator = ValueAnimator.ofObject(<span class="keyword">new</span> PointSinEvaluator(), startP, endP);</div><div class="line">valueAnimator.setRepeatCount(-<span class="number">1</span>);</div><div class="line">valueAnimator.setRepeatMode(ValueAnimator.REVERSE);</div><div class="line">valueAnimator.addUpdateListener(<span class="keyword">new</span> ValueAnimator.AnimatorUpdateListener() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator animation)</span> </span>&#123;</div><div class="line">        currentPoint = (Point) animation.getAnimatedValue();</div><div class="line">        postInvalidate();</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>这样我们就完成了动画轨迹的定义，现在只要调用valueAnimator.start() 方法，就会绘制出一个正弦曲线的轨迹。</p>
+<h5 id="颜色及半径动画实现"><a href="#颜色及半径动画实现" class="headerlink" title="颜色及半径动画实现"></a>颜色及半径动画实现</h5><p>之前我们说过，使用ObjectAnimator  可以对任意对象的任意属性进行动画操作，这句话是不太严谨的，这个任意属性还需要有get 和 set  方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PointAnimView</span> <span class="keyword">extends</span> <span class="title">View</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 实现关于color 的属性动画</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> color;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">float</span> radius = RADIUS;</div><div class="line"></div><div class="line">    .....</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里在我们的自定义view中，定义了两个属性color 和 radius，并实现了他们各自的get set 方法，这样我们就可以使用属性动画的特点实现小球颜色变化的动画和半径变化的动画。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">ObjectAnimator animColor = ObjectAnimator.ofObject(<span class="keyword">this</span>, <span class="string">"color"</span>, <span class="keyword">new</span> ArgbEvaluator(), Color.GREEN,</div><div class="line">        Color.YELLOW, Color.BLUE, Color.WHITE, Color.RED);</div><div class="line">animColor.setRepeatCount(-<span class="number">1</span>);</div><div class="line">animColor.setRepeatMode(ValueAnimator.REVERSE);</div><div class="line"></div><div class="line"></div><div class="line">ValueAnimator animScale = ValueAnimator.ofFloat(<span class="number">20f</span>, <span class="number">80f</span>, <span class="number">60f</span>, <span class="number">10f</span>, <span class="number">35f</span>,<span class="number">55f</span>,<span class="number">10f</span>);</div><div class="line">animScale.setRepeatCount(-<span class="number">1</span>);</div><div class="line">animScale.setRepeatMode(ValueAnimator.REVERSE);</div><div class="line">animScale.setDuration(<span class="number">5000</span>);</div><div class="line">animScale.addUpdateListener(<span class="keyword">new</span> ValueAnimator.AnimatorUpdateListener() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator animation)</span> </span>&#123;</div><div class="line">        radius = (<span class="keyword">float</span>) animation.getAnimatedValue();</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>这里，我们使用ObjectAnimator  实现对color 属性的值按照ArgbEvaluator 这个类的规律在给定的颜色值之间变化，这个ArgbEvaluator 和我们之前定义的PointSinEvaluator一样，都是决定动画如何从初始值过渡到结束值的，只不过这个类是系统自带的，我们直接拿来用就可以，他可以实现各种颜色间的自由过渡。</p>
+<p>对radius 这个属性使用了ValueAnimator，使用了其ofFloat方法实现了一系列float值的变化；同时为其添加了动画变化的监听器，在属性值更新的过程中，我们可以将变化的结果赋给radius，这样就实现了半径动态的变化。</p>
+<p><strong>这里radius 也可以使用和color相同的方式，只需要把ArgbEvaluator 替换为FloatEvaluator，同时修改动画的变化值即可；使用添加监听器的方式，只是为了介绍监听器的使用方法而已</strong></p>
+<p>好了，到这里我们已经定义出了所有需要的动画，前面说过，属性动画也是可以组合使用的。因此，在动画启动的时候，同时播放这三个动画，就可以实现图中的效果了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">animSet = <span class="keyword">new</span> AnimatorSet();</div><div class="line">animSet.play(valueAnimator).with(animColor).with(animScale);</div><div class="line">animSet.setDuration(<span class="number">5000</span>);</div><div class="line">animSet.setInterpolator(interpolatorType);</div><div class="line">animSet.start();</div></pre></td></tr></table></figure>
+<p>PointAnimView  源码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PointAnimView</span> <span class="keyword">extends</span> <span class="title">View</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">float</span> RADIUS = <span class="number">20f</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Point currentPoint;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Paint mPaint;</div><div class="line">    <span class="keyword">private</span> Paint linePaint;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> AnimatorSet animSet;</div><div class="line">    <span class="keyword">private</span> TimeInterpolator interpolatorType = <span class="keyword">new</span> LinearInterpolator();</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 实现关于color 的属性动画</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> color;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">float</span> radius = RADIUS;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PointAnimView</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context);</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PointAnimView</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context, attrs);</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PointAnimView</span><span class="params">(Context context, AttributeSet attrs, <span class="keyword">int</span> defStyleAttr)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context, attrs, defStyleAttr);</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getColor</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> color;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setColor</span><span class="params">(<span class="keyword">int</span> color)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.color = color;</div><div class="line">        mPaint.setColor(<span class="keyword">this</span>.color);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getRadius</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> radius;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setRadius</span><span class="params">(<span class="keyword">float</span> radius)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.radius = radius;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</div><div class="line">        mPaint = <span class="keyword">new</span> Paint(Paint.ANTI_ALIAS_FLAG);</div><div class="line">        mPaint.setColor(Color.TRANSPARENT);</div><div class="line"></div><div class="line">        linePaint = <span class="keyword">new</span> Paint(Paint.ANTI_ALIAS_FLAG);</div><div class="line">        linePaint.setColor(Color.BLACK);</div><div class="line">        linePaint.setStrokeWidth(<span class="number">5</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (currentPoint == <span class="keyword">null</span>) &#123;</div><div class="line">            currentPoint = <span class="keyword">new</span> Point(RADIUS, RADIUS);</div><div class="line">            drawCircle(canvas);</div><div class="line"><span class="comment">//            StartAnimation();</span></div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            drawCircle(canvas);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        drawLine(canvas);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">drawLine</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">        canvas.drawLine(<span class="number">10</span>, getHeight() / <span class="number">2</span>, getWidth(), getHeight() / <span class="number">2</span>, linePaint);</div><div class="line">        canvas.drawLine(<span class="number">10</span>, getHeight() / <span class="number">2</span> - <span class="number">150</span>, <span class="number">10</span>, getHeight() / <span class="number">2</span> + <span class="number">150</span>, linePaint);</div><div class="line">        canvas.drawPoint(currentPoint.getX(), currentPoint.getY(), linePaint);</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">StartAnimation</span><span class="params">()</span> </span>&#123;</div><div class="line">        Point startP = <span class="keyword">new</span> Point(RADIUS, RADIUS);</div><div class="line">        Point endP = <span class="keyword">new</span> Point(getWidth() - RADIUS, getHeight() - RADIUS);</div><div class="line">        <span class="keyword">final</span> ValueAnimator valueAnimator = ValueAnimator.ofObject(<span class="keyword">new</span> PointSinEvaluator(), startP, endP);</div><div class="line">        valueAnimator.setRepeatCount(-<span class="number">1</span>);</div><div class="line">        valueAnimator.setRepeatMode(ValueAnimator.REVERSE);</div><div class="line">        valueAnimator.addUpdateListener(<span class="keyword">new</span> ValueAnimator.AnimatorUpdateListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator animation)</span> </span>&#123;</div><div class="line">                currentPoint = (Point) animation.getAnimatedValue();</div><div class="line">                postInvalidate();</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line"><span class="comment">//</span></div><div class="line">        ObjectAnimator animColor = ObjectAnimator.ofObject(<span class="keyword">this</span>, <span class="string">"color"</span>, <span class="keyword">new</span> ArgbEvaluator(), Color.GREEN,</div><div class="line">                Color.YELLOW, Color.BLUE, Color.WHITE, Color.RED);</div><div class="line">        animColor.setRepeatCount(-<span class="number">1</span>);</div><div class="line">        animColor.setRepeatMode(ValueAnimator.REVERSE);</div><div class="line"></div><div class="line"></div><div class="line">        ValueAnimator animScale = ValueAnimator.ofFloat(<span class="number">20f</span>, <span class="number">80f</span>, <span class="number">60f</span>, <span class="number">10f</span>, <span class="number">35f</span>,<span class="number">55f</span>,<span class="number">10f</span>);</div><div class="line">        animScale.setRepeatCount(-<span class="number">1</span>);</div><div class="line">        animScale.setRepeatMode(ValueAnimator.REVERSE);</div><div class="line">        animScale.setDuration(<span class="number">5000</span>);</div><div class="line">        animScale.addUpdateListener(<span class="keyword">new</span> ValueAnimator.AnimatorUpdateListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator animation)</span> </span>&#123;</div><div class="line">                radius = (<span class="keyword">float</span>) animation.getAnimatedValue();</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line"></div><div class="line">        animSet = <span class="keyword">new</span> AnimatorSet();</div><div class="line">        animSet.play(valueAnimator).with(animColor).with(animScale);</div><div class="line">        animSet.setDuration(<span class="number">5000</span>);</div><div class="line">        animSet.setInterpolator(interpolatorType);</div><div class="line">        animSet.start();</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">drawCircle</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">        <span class="keyword">float</span> x = currentPoint.getX();</div><div class="line">        <span class="keyword">float</span> y = currentPoint.getY();</div><div class="line">        canvas.drawCircle(x, y, radius, mPaint);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setInterpolatorType</span><span class="params">(<span class="keyword">int</span> type )</span> </span>&#123;</div><div class="line">        <span class="keyword">switch</span> (type) &#123;</div><div class="line">            <span class="keyword">case</span> <span class="number">1</span>:</div><div class="line">                interpolatorType = <span class="keyword">new</span> BounceInterpolator();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> <span class="number">2</span>:</div><div class="line">                interpolatorType = <span class="keyword">new</span> AccelerateDecelerateInterpolator();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> <span class="number">3</span>:</div><div class="line">                interpolatorType = <span class="keyword">new</span> DecelerateInterpolator();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> <span class="number">4</span>:</div><div class="line">                interpolatorType = <span class="keyword">new</span> AnticipateInterpolator();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> <span class="number">5</span>:</div><div class="line">                interpolatorType = <span class="keyword">new</span> LinearInterpolator();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> <span class="number">6</span>:</div><div class="line">                interpolatorType=<span class="keyword">new</span> LinearOutSlowInInterpolator();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> <span class="number">7</span>:</div><div class="line">                interpolatorType = <span class="keyword">new</span> OvershootInterpolator();</div><div class="line">            <span class="keyword">default</span>:</div><div class="line">                interpolatorType = <span class="keyword">new</span> LinearInterpolator();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="meta">@TargetApi</span>(Build.VERSION_CODES.KITKAT)</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pauseAnimation</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (animSet != <span class="keyword">null</span>) &#123;</div><div class="line">            animSet.pause();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stopAnimation</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (animSet != <span class="keyword">null</span>) &#123;</div><div class="line">            animSet.cancel();</div><div class="line">            <span class="keyword">this</span>.clearAnimation();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="TimeInterpolator-介绍"><a href="#TimeInterpolator-介绍" class="headerlink" title="TimeInterpolator 介绍"></a>TimeInterpolator 介绍</h4><p>Interpolator的概念其实我们并不陌生，在补间动画中我们就使用到了。他就是用来控制动画快慢节奏的；而在属性动画中，TimeInterpolator 也是类似的作用；TimeInterpolator 继承自Interpolator。我们可以继承TimerInterpolator 以自己的方式控制动画变化的节奏，也可以使用Android 系统提供的Interpolator。</p>
+<p>下面都是系统帮我们定义好的一些Interpolator，我们可以通过setInterpolator 设置不同的Interpolator。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1115031-9e26dde319ebaae7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>这里我们使用的Interpolator就决定了 前面我们提到的fraction。变化的节奏决定了动画所执行的百分比。不得不说，这么ValueAnimator的设计的确是很巧妙。</p>
+<h4 id="XML-属性动画"><a href="#XML-属性动画" class="headerlink" title="XML 属性动画"></a>XML 属性动画</h4><p>这里提一下，属性动画当然也可以使用xml文件的方式实现，但是属性动画的属性值一般会牵扯到对象具体的属性，更多是通过代码动态获取，所以xml文件的实现会有些不方便。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">set</span> <span class="attr">android:ordering</span>=<span class="string">"sequentially"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">set</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">objectAnimator</span></span></div><div class="line">            <span class="attr">android:propertyName</span>=<span class="string">"x"</span></div><div class="line">            <span class="attr">android:duration</span>=<span class="string">"500"</span></div><div class="line">            <span class="attr">android:valueTo</span>=<span class="string">"400"</span></div><div class="line">            <span class="attr">android:valueType</span>=<span class="string">"intType"</span>/&gt;</div><div class="line">        <span class="tag">&lt;<span class="name">objectAnimator</span></span></div><div class="line">            <span class="attr">android:propertyName</span>=<span class="string">"y"</span></div><div class="line">            <span class="attr">android:duration</span>=<span class="string">"500"</span></div><div class="line">            <span class="attr">android:valueTo</span>=<span class="string">"300"</span></div><div class="line">            <span class="attr">android:valueType</span>=<span class="string">"intType"</span>/&gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">set</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">objectAnimator</span></span></div><div class="line">        <span class="attr">android:propertyName</span>=<span class="string">"alpha"</span></div><div class="line">        <span class="attr">android:duration</span>=<span class="string">"500"</span></div><div class="line">        <span class="attr">android:valueTo</span>=<span class="string">"1f"</span>/&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">set</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>使用方式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(myContext,</div><div class="line">    R.anim.property_animator);</div><div class="line">set.setTarget(myObject);</div><div class="line">set.start();</div></pre></td></tr></table></figure>
+<p>xml 文件中的标签也和属性动画的类相对应。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ValueAnimator --- <span class="tag">&lt;<span class="name">animator</span>&gt;</span> </div><div class="line">ObjectAnimator --- <span class="tag">&lt;<span class="name">objectAnimator</span>&gt;</span> </div><div class="line">AnimatorSet --- <span class="tag">&lt;<span class="name">set</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>这些就是属性动画的核心内容。现在使用属性动画的特性自定义动画应该不是难事了。其余便签的含义，结合之前的内容应该不难理解了。</p>
+<h2 id="四、传统动画-VS-属性动画"><a href="#四、传统动画-VS-属性动画" class="headerlink" title="四、传统动画 VS 属性动画"></a>四、传统动画 VS 属性动画</h2><p>相较于传统动画，属性动画有很多优势。那是否意味着属性动画可以完全替代传统动画呢。其实不然，两种动画都有各自的优势，属性动画如此强大，也不是没有缺点。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1115031-6864a7fffbc80884.gif?imageMogr2/auto-orient/strip" alt="补间动画点击事件"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1115031-10bb818b5584da5e.gif?imageMogr2/auto-orient/strip" alt="属性动画点击事件"></p>
+<ul>
+<li>从上面两幅图比较可以发现，补间动画中，虽然使用translate将图片移动了，但是点击原来的位置，依旧可以发生点击事件，而属性动画却不是。因此我们可以确定，属性动画才是真正的实现了view的移动，补间动画对view的移动更像是在不同地方绘制了一个影子，实际的对象还是处于原来的地方。</li>
+<li>当我们把动画的repeatCount设置为无限循环时，如果在Activity退出时没有及时将动画停止，属性动画会导致Activity无法释放而导致内存泄漏，而补间动画却没有问题。因此，使用属性动画时切记在Activity执行 onStop 方法时顺便将动画停止。（对这个怀疑的同学可以自己通过在动画的Update  回调方法打印日志的方式进行验证）。</li>
+<li>xml 文件实现的补间动画，复用率极高。在Activity切换，窗口弹出时等情景中有着很好的效果。</li>
+<li>使用帧动画时需要注意，不要使用过多特别大的图，容易导致内存不足。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/wechat-qcode.jpg" alt="Winner Liu wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Animator/" rel="tag"># Animator</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/07/Context详解/" rel="next" title="Context详解">
+                <i class="fa fa-chevron-left"></i> Context详解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/07/Android性能优化总结/" rel="prev" title="Android性能优化总结">
+                Android性能优化总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Winner Liu" />
+            
+              <p class="site-author-name" itemprop="name">Winner Liu</p>
+              <p class="site-description motion-element" itemprop="description">燃烧吧，我的小宇宙！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、Android-动画分类"><span class="nav-number">1.</span> <span class="nav-text">一、Android 动画分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、传统动画"><span class="nav-number">2.</span> <span class="nav-text">二、传统动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#帧动画"><span class="nav-number">2.1.</span> <span class="nav-text">帧动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#补间动画"><span class="nav-number">2.2.</span> <span class="nav-text">补间动画</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#XML-实现"><span class="nav-number">2.2.1.</span> <span class="nav-text">XML 实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java-Code-实现"><span class="nav-number">2.2.2.</span> <span class="nav-text">Java Code  实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、属性动画"><span class="nav-number">3.</span> <span class="nav-text">三、属性动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#属性动画入门"><span class="nav-number">3.1.</span> <span class="nav-text">属性动画入门</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#属性动画核心原理"><span class="nav-number">3.2.</span> <span class="nav-text">属性动画核心原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#属性动画自定义实现"><span class="nav-number">3.3.</span> <span class="nav-text">属性动画自定义实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#用TypeEvaluator-确定运动轨迹"><span class="nav-number">3.3.0.1.</span> <span class="nav-text">用TypeEvaluator 确定运动轨迹</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#颜色及半径动画实现"><span class="nav-number">3.3.0.2.</span> <span class="nav-text">颜色及半径动画实现</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TimeInterpolator-介绍"><span class="nav-number">3.3.1.</span> <span class="nav-text">TimeInterpolator 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#XML-属性动画"><span class="nav-number">3.3.2.</span> <span class="nav-text">XML 属性动画</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、传统动画-VS-属性动画"><span class="nav-number">4.</span> <span class="nav-text">四、传统动画 VS 属性动画</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Winner Liu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

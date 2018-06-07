@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,HandlerThread," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="我们知道在Android系统中，我们执行完耗时操作都要另外开启子线程来执行，执行完线程以后线程会自动销毁。想象一下如果我们在项目中经常要执行耗时操作，如果经常要开启线程，接着又销毁线程，这无疑是很消耗性能的?那有什么解决方法呢？
+
+使用线程池
+使用HandlerThread
+
+本篇文章主要讲解一下问题
+HandlerThread的使用场景以及怎样使用HandlerThread？
+HandlerTh">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HandlerThread详解">
+<meta property="og:url" content="http://yoursite.com/2018/06/07/HandlerThread详解/index.html">
+<meta property="og:site_name" content="WinnerCode">
+<meta property="og:description" content="我们知道在Android系统中，我们执行完耗时操作都要另外开启子线程来执行，执行完线程以后线程会自动销毁。想象一下如果我们在项目中经常要执行耗时操作，如果经常要开启线程，接着又销毁线程，这无疑是很消耗性能的?那有什么解决方法呢？
+
+使用线程池
+使用HandlerThread
+
+本篇文章主要讲解一下问题
+HandlerThread的使用场景以及怎样使用HandlerThread？
+HandlerTh">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2050203-a1ee8856b13b5368.gif?imageMogr2/auto-orient/strip">
+<meta property="og:updated_time" content="2018-06-07T14:30:50.021Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HandlerThread详解">
+<meta name="twitter:description" content="我们知道在Android系统中，我们执行完耗时操作都要另外开启子线程来执行，执行完线程以后线程会自动销毁。想象一下如果我们在项目中经常要执行耗时操作，如果经常要开启线程，接着又销毁线程，这无疑是很消耗性能的?那有什么解决方法呢？
+
+使用线程池
+使用HandlerThread
+
+本篇文章主要讲解一下问题
+HandlerThread的使用场景以及怎样使用HandlerThread？
+HandlerTh">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2050203-a1ee8856b13b5368.gif?imageMogr2/auto-orient/strip">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/07/HandlerThread详解/"/>
+
+
+
+
+
+  <title>HandlerThread详解 | WinnerCode</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?642f81466b73ae68d2149c1678952ac8";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WinnerCode</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/07/HandlerThread详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Winner Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WinnerCode">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HandlerThread详解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-07T22:30:16+08:00">
+                2018-06-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Android基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>我们知道在Android系统中，我们执行完耗时操作都要另外开启子线程来执行，执行完线程以后线程会自动销毁。想象一下如果我们在项目中经常要执行耗时操作，如果经常要开启线程，接着又销毁线程，这无疑是很消耗性能的?那有什么解决方法呢？</strong></p>
+<ol>
+<li>使用线程池</li>
+<li>使用HandlerThread</li>
+</ol>
+<h3 id="本篇文章主要讲解一下问题"><a href="#本篇文章主要讲解一下问题" class="headerlink" title="本篇文章主要讲解一下问题"></a>本篇文章主要讲解一下问题</h3><ol>
+<li>HandlerThread的使用场景以及怎样使用HandlerThread？</li>
+<li>HandlerThread源码分析</li>
+</ol>
+<h2 id="HandlerThread的使用场景以及怎样使用HandlerThread？"><a href="#HandlerThread的使用场景以及怎样使用HandlerThread？" class="headerlink" title="HandlerThread的使用场景以及怎样使用HandlerThread？"></a>HandlerThread的使用场景以及怎样使用HandlerThread？</h2><h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><p>HandlerThread是Google帮我们封装好的，可以用来执行多个耗时操作，而不需要多次开启线程，里面是采用handler和Looper实现的</p>
+<blockquote>
+<p>Handy class for starting a new thread that has a looper. The looper can then be used to create handler classes. Note that start() must still be called.</p>
+</blockquote>
+<h3 id="怎样使用HandlerThread？"><a href="#怎样使用HandlerThread？" class="headerlink" title="怎样使用HandlerThread？"></a>怎样使用HandlerThread？</h3><ol>
+<li>创建HandlerThread的实例对象</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">HandlerThread handlerThread = <span class="keyword">new</span> HandlerThread(<span class="string">"myHandlerThread"</span>);</div></pre></td></tr></table></figure>
+<p>该参数表示线程的名字，可以随便选择。 </p>
+<ol>
+<li>启动我们创建的HandlerThread线程</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">handlerThread.start();</div></pre></td></tr></table></figure>
+<ol>
+<li>将我们的handlerThread与Handler绑定在一起。<br>还记得是怎样将Handler与线程对象绑定在一起的吗？其实很简单，就是将线程的looper与Handler绑定在一起，代码如下：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">mThreadHandler = <span class="keyword">new</span> Handler(mHandlerThread.getLooper()) &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">        checkForUpdate();</div><div class="line">        <span class="keyword">if</span>(isUpdate)&#123;</div><div class="line">            mThreadHandler.sendEmptyMessage(MSG_UPDATE_INFO);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p><strong>注意必须按照以上三个步骤来，下面在讲解源码的时候会分析其原因</strong></p>
+<h3 id="完整测试代码如下"><a href="#完整测试代码如下" class="headerlink" title="完整测试代码如下"></a>完整测试代码如下</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> TextView mTv;</div><div class="line">    Handler mMainHandler = <span class="keyword">new</span> Handler();</div><div class="line">    <span class="keyword">private</span> Handler mThreadHandler;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MSG_UPDATE_INFO = <span class="number">0x100</span>;</div><div class="line">    <span class="keyword">private</span> HandlerThread mHandlerThread;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> isUpdate=<span class="keyword">true</span>;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        mTv = (TextView) findViewById(R.id.tv);</div><div class="line">        initHandlerThread();</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initHandlerThread</span><span class="params">()</span> </span>&#123;</div><div class="line">        mHandlerThread = <span class="keyword">new</span> HandlerThread(<span class="string">"xujun"</span>);</div><div class="line">        mHandlerThread.start();</div><div class="line">        mThreadHandler = <span class="keyword">new</span> Handler(mHandlerThread.getLooper()) &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">                checkForUpdate();</div><div class="line">                <span class="keyword">if</span>(isUpdate)&#123;</div><div class="line">                    mThreadHandler.sendEmptyMessage(MSG_UPDATE_INFO);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 模拟从服务器解析数据</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">checkForUpdate</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="comment">//模拟耗时</span></div><div class="line">            Thread.sleep(<span class="number">1200</span>);</div><div class="line">            mMainHandler.post(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">                <span class="meta">@Override</span></div><div class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">                    String result = <span class="string">"实时更新中，当前股票行情：&lt;font color='red'&gt;%d&lt;/font&gt;"</span>;</div><div class="line">                    result = String.format(result, (<span class="keyword">int</span>) (Math.random() * <span class="number">5000</span> + <span class="number">1000</span>));</div><div class="line">                    mTv.setText(Html.fromHtml(result));</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onResume</span><span class="params">()</span> </span>&#123;</div><div class="line">        isUpdate=<span class="keyword">true</span>;</div><div class="line">        <span class="keyword">super</span>.onResume();</div><div class="line">        mThreadHandler.sendEmptyMessage(MSG_UPDATE_INFO);</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onPause</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onPause();</div><div class="line">        isUpdate=<span class="keyword">false</span>;</div><div class="line">        mThreadHandler.removeMessages(MSG_UPDATE_INFO);</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onDestroy();</div><div class="line">        mHandlerThread.quit();</div><div class="line">        mMainHandler.removeCallbacksAndMessages(<span class="keyword">null</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>运行以上测试代码，将可以看到如下效果图(例子不太恰当，主要使用场景是在handleMessage中执行耗时操作)</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2050203-a1ee8856b13b5368.gif?imageMogr2/auto-orient/strip" alt="img"></p>
+<h2 id="HandlerThread源码分析"><a href="#HandlerThread源码分析" class="headerlink" title="HandlerThread源码分析"></a>HandlerThread源码分析</h2><p>官方源代码如下，是基于sdk23的，可以看到，只有一百多行代码而已</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HandlerThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> mPriority;</div><div class="line">    <span class="keyword">int</span> mTid = -<span class="number">1</span>;</div><div class="line">    Looper mLooper;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HandlerThread</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(name);</div><div class="line">        mPriority = Process.THREAD_PRIORITY_DEFAULT;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HandlerThread</span><span class="params">(String name, <span class="keyword">int</span> priority)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(name);</div><div class="line">        mPriority = priority;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Call back method that can be explicitly overridden if needed to execute some</div><div class="line">     * setup before Looper loops.</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onLooperPrepared</span><span class="params">()</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        mTid = Process.myTid();</div><div class="line">        Looper.prepare();</div><div class="line">        <span class="comment">//持有锁机制来获得当前线程的Looper对象</span></div><div class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">            mLooper = Looper.myLooper();</div><div class="line">            <span class="comment">//发出通知，当前线程已经创建mLooper对象成功，这里主要是通知getLooper方法中的wait</span></div><div class="line">            notifyAll();</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//设置线程的优先级别</span></div><div class="line">        Process.setThreadPriority(mPriority);</div><div class="line">        <span class="comment">//这里默认是空方法的实现，我们可以重写这个方法来做一些线程开始之前的准备，方便扩展</span></div><div class="line">        onLooperPrepared();</div><div class="line">        Looper.loop();</div><div class="line">        mTid = -<span class="number">1</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> Looper <span class="title">getLooper</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (!isAlive()) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 直到线程创建完Looper之后才能获得Looper对象，Looper未创建成功，阻塞</span></div><div class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">            <span class="keyword">while</span> (isAlive() &amp;&amp; mLooper == <span class="keyword">null</span>) &#123;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    wait();</div><div class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> mLooper;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">quit</span><span class="params">()</span> </span>&#123;</div><div class="line">        Looper looper = getLooper();</div><div class="line">        <span class="keyword">if</span> (looper != <span class="keyword">null</span>) &#123;</div><div class="line">            looper.quit();</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">quitSafely</span><span class="params">()</span> </span>&#123;</div><div class="line">        Looper looper = getLooper();</div><div class="line">        <span class="keyword">if</span> (looper != <span class="keyword">null</span>) &#123;</div><div class="line">            looper.quitSafely();</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Returns the identifier of this thread. See Process.myTid().</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getThreadId</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mTid;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="1）首先我们先来看一下它的构造方法"><a href="#1）首先我们先来看一下它的构造方法" class="headerlink" title="1）首先我们先来看一下它的构造方法"></a>1）首先我们先来看一下它的构造方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">HandlerThread</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">       <span class="keyword">super</span>(name);</div><div class="line">       mPriority = Process.THREAD_PRIORITY_DEFAULT;</div><div class="line">   &#125;</div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="title">HandlerThread</span><span class="params">(String name, <span class="keyword">int</span> priority)</span> </span>&#123;</div><div class="line">       <span class="keyword">super</span>(name);</div><div class="line">       mPriority = priority;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>有两个构造方法，一个参数的和两个参数的，name代表当前线程的名称，priority为线程的优先级别</p>
+<h3 id="2）接着我们来看一下run（）方法，在run方法里面我们可以看到我们会初始化一个Looper，并设置线程的优先级别"><a href="#2）接着我们来看一下run（）方法，在run方法里面我们可以看到我们会初始化一个Looper，并设置线程的优先级别" class="headerlink" title="2）接着我们来看一下run（）方法，在run方法里面我们可以看到我们会初始化一个Looper，并设置线程的优先级别"></a>2）接着我们来看一下run（）方法，在run方法里面我们可以看到我们会初始化一个Looper，并设置线程的优先级别</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">    mTid = Process.myTid();</div><div class="line">    Looper.prepare();</div><div class="line">    <span class="comment">//持有锁机制来获得当前线程的Looper对象</span></div><div class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">        mLooper = Looper.myLooper();</div><div class="line">        <span class="comment">//发出通知，当前线程已经创建mLooper对象成功，这里主要是通知getLooper方法中的wait</span></div><div class="line">        notifyAll();</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//设置线程的优先级别</span></div><div class="line">    Process.setThreadPriority(mPriority);</div><div class="line">    <span class="comment">//这里默认是空方法的实现，我们可以重写这个方法来做一些线程开始之前的准备，方便扩展</span></div><div class="line">    onLooperPrepared();</div><div class="line">    Looper.loop();</div><div class="line">    mTid = -<span class="number">1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>还记得我们前面我们说到使用HandlerThread的时候必须调用start（）方法，接着才可以将我们的HandlerThread和我们的handler绑定在一起吗?其实原因就是我们是在run（）方法才开始初始化我们的looper，而我们调用HandlerThread的start（）方法的时候，线程会交给虚拟机调度，由虚拟机自动调用run方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">mHandlerThread.start();</div><div class="line">mThreadHandler = <span class="keyword">new</span> Handler(mHandlerThread.getLooper()) &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">        checkForUpdate();</div><div class="line">        <span class="keyword">if</span>(isUpdate)&#123;</div><div class="line">            mThreadHandler.sendEmptyMessage(MSG_UPDATE_INFO);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<ul>
+<li>这里我们为什么要使用锁机制和notifyAll();，原因我们可以从getLooper（）方法中知道</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> Looper <span class="title">getLooper</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (!isAlive()) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 直到线程创建完Looper之后才能获得Looper对象，Looper未创建成功，阻塞</span></div><div class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">        <span class="keyword">while</span> (isAlive() &amp;&amp; mLooper == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                wait();</div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> mLooper;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>总结：在获得mLooper对象的时候存在一个同步的问题，只有当线程创建成功并且Looper对象也创建成功之后才能获得mLooper的值。这里等待方法wait和run方法中的notifyAll方法共同完成同步问题。</strong></p>
+<h3 id="3-接着我们来看一下quit方法和quitSafe方法"><a href="#3-接着我们来看一下quit方法和quitSafe方法" class="headerlink" title="3)接着我们来看一下quit方法和quitSafe方法"></a>3)接着我们来看一下quit方法和quitSafe方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//调用这个方法退出Looper消息循环，及退出线程</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">quit</span><span class="params">()</span> </span>&#123;</div><div class="line">    Looper looper = getLooper();</div><div class="line">    <span class="keyword">if</span> (looper != <span class="keyword">null</span>) &#123;</div><div class="line">        looper.quit();</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;</div><div class="line"><span class="comment">//调用这个方法安全地退出线程</span></div><div class="line"><span class="meta">@TargetApi</span>(Build.VERSION_CODES.JELLY_BEAN_MR2)</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">quitSafely</span><span class="params">()</span> </span>&#123;</div><div class="line">    Looper looper = getLooper();</div><div class="line">    <span class="keyword">if</span> (looper != <span class="keyword">null</span>) &#123;</div><div class="line">        looper.quitSafely();</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>跟踪这两个方法容易知道只两个方法最终都会调用MessageQueue的quit（boolean safe）方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">quit</span><span class="params">(<span class="keyword">boolean</span> safe)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (!mQuitAllowed) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Main thread not allowed to quit."</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">        <span class="keyword">if</span> (mQuitting) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        mQuitting = <span class="keyword">true</span>;</div><div class="line">        <span class="comment">//安全退出调用这个方法</span></div><div class="line">        <span class="keyword">if</span> (safe) &#123;</div><div class="line">            removeAllFutureMessagesLocked();</div><div class="line">        &#125; <span class="keyword">else</span> &#123;<span class="comment">//不安全退出调用这个方法</span></div><div class="line">            removeAllMessagesLocked();</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// We can assume mPtr != 0 because mQuitting was previously false.</span></div><div class="line">        nativeWake(mPtr);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>不安全的会调用removeAllMessagesLocked();这个方法，我们来看这个方法是怎样处理的，其实就是遍历Message链表，移除所有信息的回调，并重置为null</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">removeAllMessagesLocked</span><span class="params">()</span> </span>&#123;</div><div class="line">    Message p = mMessages;</div><div class="line">    <span class="keyword">while</span> (p != <span class="keyword">null</span>) &#123;</div><div class="line">        Message n = p.next;</div><div class="line">        p.recycleUnchecked();</div><div class="line">        p = n;</div><div class="line">    &#125;</div><div class="line">    mMessages = <span class="keyword">null</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>安全地会调用removeAllFutureMessagesLocked();这个方法，它会根据Message.when这个属性，判断我们当前消息队列是否正在处理消息，没有正在处理消息的话，直接移除所有回调，正在处理的话，等待该消息处理处理完毕再退出该循环。因此说quitSafe（）是安全的，而quit（）方法是不安全的，因为quit方法不管是否正在处理消息，直接移除所有回调。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">removeAllFutureMessagesLocked</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> <span class="keyword">long</span> now = SystemClock.uptimeMillis();</div><div class="line">    Message p = mMessages;</div><div class="line">    <span class="keyword">if</span> (p != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="comment">//判断当前队列中的消息是否正在处理这个消息，》没有的话，直接移除所有回调</span></div><div class="line">        <span class="keyword">if</span> (p.when &gt; now) &#123;</div><div class="line">            removeAllMessagesLocked();</div><div class="line">        &#125; <span class="keyword">else</span> &#123;<span class="comment">//正在处理的话，等待该消息处理处理完毕再退出该循环</span></div><div class="line">            Message n;</div><div class="line">            <span class="keyword">for</span> (;;) &#123;</div><div class="line">                n = p.next;</div><div class="line">                <span class="keyword">if</span> (n == <span class="keyword">null</span>) &#123;</div><div class="line">                    <span class="keyword">return</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">if</span> (n.when &gt; now) &#123;</div><div class="line">                    <span class="keyword">break</span>;</div><div class="line">                &#125;</div><div class="line">                p = n;</div><div class="line">            &#125;</div><div class="line">            p.next = <span class="keyword">null</span>;</div><div class="line">            do &#123;</div><div class="line">                p = n;</div><div class="line">                n = p.next;</div><div class="line">                p.recycleUnchecked();</div><div class="line">            &#125; <span class="keyword">while</span> (n != <span class="keyword">null</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/wechat-qcode.jpg" alt="Winner Liu wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/HandlerThread/" rel="tag"># HandlerThread</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/07/Android事件分发机制/" rel="next" title="Android事件分发机制">
+                <i class="fa fa-chevron-left"></i> Android事件分发机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/07/IntentService详解/" rel="prev" title="IntentService详解">
+                IntentService详解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Winner Liu" />
+            
+              <p class="site-author-name" itemprop="name">Winner Liu</p>
+              <p class="site-description motion-element" itemprop="description">燃烧吧，我的小宇宙！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#本篇文章主要讲解一下问题"><span class="nav-number">1.</span> <span class="nav-text">本篇文章主要讲解一下问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HandlerThread的使用场景以及怎样使用HandlerThread？"><span class="nav-number"></span> <span class="nav-text">HandlerThread的使用场景以及怎样使用HandlerThread？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用场景"><span class="nav-number">1.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#怎样使用HandlerThread？"><span class="nav-number">2.</span> <span class="nav-text">怎样使用HandlerThread？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完整测试代码如下"><span class="nav-number">3.</span> <span class="nav-text">完整测试代码如下</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HandlerThread源码分析"><span class="nav-number"></span> <span class="nav-text">HandlerThread源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1）首先我们先来看一下它的构造方法"><span class="nav-number">1.</span> <span class="nav-text">1）首先我们先来看一下它的构造方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2）接着我们来看一下run（）方法，在run方法里面我们可以看到我们会初始化一个Looper，并设置线程的优先级别"><span class="nav-number">2.</span> <span class="nav-text">2）接着我们来看一下run（）方法，在run方法里面我们可以看到我们会初始化一个Looper，并设置线程的优先级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-接着我们来看一下quit方法和quitSafe方法"><span class="nav-number">3.</span> <span class="nav-text">3)接着我们来看一下quit方法和quitSafe方法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Winner Liu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

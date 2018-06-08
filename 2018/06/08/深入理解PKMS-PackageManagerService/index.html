@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,读书笔记,PackageManagerService," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="深入理解 PackageManagerService
+http://gityuan.com/2016/11/06/packagemanager/
+
+
+
+一.概述PackageManagerService(简称PKMS)，是Android系统中核心服务之一，管理着所有跟package相关的工作，常见的比如安装、卸载应用。 PKMS服务也是通过binder进行通信，IPackageManager.a">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解PMS-PackageManagerService">
+<meta property="og:url" content="http://yoursite.com/2018/06/08/深入理解PKMS-PackageManagerService/index.html">
+<meta property="og:site_name" content="WinnerCode">
+<meta property="og:description" content="深入理解 PackageManagerService
+http://gityuan.com/2016/11/06/packagemanager/
+
+
+
+一.概述PackageManagerService(简称PKMS)，是Android系统中核心服务之一，管理着所有跟package相关的工作，常见的比如安装、卸载应用。 PKMS服务也是通过binder进行通信，IPackageManager.a">
+<meta property="og:image" content="http://gityuan.com/images/pkms/package_manager_service.jpg">
+<meta property="og:image" content="http://img.blog.csdn.net/20150803111058786?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="http://static.open-open.com/lib/uploadImg/20120209/20120209162823_114.gif">
+<meta property="og:image" content="http://static.open-open.com/lib/uploadImg/20120209/20120209162824_272.gif">
+<meta property="og:image" content="http://static.open-open.com/lib/uploadImg/20120209/20120209162825_662.gif">
+<meta property="og:updated_time" content="2018-06-08T02:30:23.976Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解PMS-PackageManagerService">
+<meta name="twitter:description" content="深入理解 PackageManagerService
+http://gityuan.com/2016/11/06/packagemanager/
+
+
+
+一.概述PackageManagerService(简称PKMS)，是Android系统中核心服务之一，管理着所有跟package相关的工作，常见的比如安装、卸载应用。 PKMS服务也是通过binder进行通信，IPackageManager.a">
+<meta name="twitter:image" content="http://gityuan.com/images/pkms/package_manager_service.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/08/深入理解PKMS-PackageManagerService/"/>
+
+
+
+
+
+  <title>深入理解PMS-PackageManagerService | WinnerCode</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?642f81466b73ae68d2149c1678952ac8";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WinnerCode</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/深入理解PKMS-PackageManagerService/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Winner Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WinnerCode">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深入理解PMS-PackageManagerService</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T10:19:19+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android高级/" itemprop="url" rel="index">
+                    <span itemprop="name">Android高级</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <ul>
+<li><a href="http://blog.csdn.net/innost/article/details/47253179" target="_blank" rel="external">深入理解 PackageManagerService</a><ul>
+<li><a href="http://gityuan.com/2016/11/06/packagemanager/" target="_blank" rel="external">http://gityuan.com/2016/11/06/packagemanager/</a></li>
+</ul>
+</li>
+</ul>
+<h5 id="一-概述"><a href="#一-概述" class="headerlink" title="一.概述"></a>一.概述</h5><p>PackageManagerService(简称PKMS)，是Android系统中核心服务之一，管理着所有跟package相关的工作，常见的比如安装、卸载应用。 PKMS服务也是通过binder进行通信，IPackageManager.aidl由工具转换后自动生成binder的服务端IPackageManager.Stub和客户端IPackageManager.Stub.Proxy，具体关系如图：</p>
+<p><img src="http://gityuan.com/images/pkms/package_manager_service.jpg" alt=""></p>
+<ul>
+<li>Binder服务端：PackageManagerService继承于IPackageManager.Stub；</li>
+<li>Binder客户端：ApplicationPackageManager(简称APM)的成员变量mPM继承于IPackageManager.Stub.Proxy; 本身APM是继承于PackageManager对象。<br>Android系统启动过程中，一路启动到SystemServer后，便可以启动framework的各大服务，本文将介绍PKMS的启动过程。</li>
+</ul>
+<p>PKMS初始化过程，分为5个阶段：</p>
+<ol>
+<li>PMS_START阶段：<ul>
+<li>创建Settings对象；</li>
+<li>将6类shareUserId到mSettings；</li>
+<li>初始化SystemConfig；</li>
+<li>创建名为“PackageManager”的handler线程mHandlerThread;</li>
+<li>创建UserManagerService多用户管理服务；</li>
+<li>通过解析4大目录中的xmL文件构造共享mSharedLibraries；</li>
+</ul>
+</li>
+<li>PMS_SYSTEM_SCAN_START阶段：<ul>
+<li>mSharedLibraries共享库中的文件执行dexopt操作；</li>
+<li>system/framework目录中满足条件的apk或jar文件执行dexopt操作；</li>
+<li>扫描系统apk;</li>
+</ul>
+</li>
+<li>PMS_DATA_SCAN_START阶段：<ul>
+<li>扫描/data/app目录下的apk;</li>
+<li>扫描/data/app-private目录下的apk;</li>
+</ul>
+</li>
+<li>PMS_SCAN_END阶段：<ul>
+<li>将上述信息写回/data/system/packages.xml;</li>
+</ul>
+</li>
+<li>PMS_READY阶段：<ul>
+<li>创建服务PackageInstallerService；<br>三、操作PKMS</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h5 id="第一阶段工作总结"><a href="#第一阶段工作总结" class="headerlink" title="第一阶段工作总结"></a>第一阶段工作总结</h5><p>在继续征程前，先总结一下PKMS构造函数在第一阶段的工作，千言万语汇成一句话：扫描并解析XML文件，将其中的信息保存到特定的数据结构中。</p>
+<h5 id="第二阶段工作总结"><a href="#第二阶段工作总结" class="headerlink" title="第二阶段工作总结"></a>第二阶段工作总结</h5><p>PKMS构造函数第二阶段的工作任务非常繁重，要创建比较多的对象，所以它是一个耗时耗内存的操作。在工作中，我们一直想优化该流程以加快启动速度，例如延时扫描不重要的APK，或者保存Package信息到文件中，然后在启动时从文件中恢复这些信息以减少APK文件读取并解析XML的工作量。但是一直没有一个比较完满的解决方案，原因有很多。比如APK之间有着比较微妙的依赖关系，因此到底延时扫描哪些APK，尚不能确定。另外，笔者感到比较疑惑的一个问题是：对于多核CPU架构，PKMS可以启动多个线程以扫描不同的目录</p>
+<h5 id="APK-安装流程总结"><a href="#APK-安装流程总结" class="headerlink" title="APK 安装流程总结"></a>APK 安装流程总结</h5><p>没想到APK的安装流程竟然如此复杂，其目的无非是让APK中的私人财产公有化。相比之下，在PKMS构造函数中进行公有化改造就非常简单。另外，如果考虑安装到SD卡的处理流程，那么APK的安装将会更加复杂。</p>
+<p>这里要总结APK安装过程中的几个重要步骤，如图所示。</p>
+<p><img src="http://img.blog.csdn.net/20150803111058786?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
+<ul>
+<li>安装APK到内部存储空间这一工作流程涉及的主要对象包括：PKMS、DCS、InstallParams和FileInstallArgs。</li>
+<li>此工作流程中每个对象涉及到的关键函数。</li>
+<li>对象之间的调用通过虚线表达，调用顺序通过①②③等标明。</li>
+</ul>
+<hr>
+<p>包管理服务启动时主要做的工作大致有如下几方面: </p>
+<ol>
+<li><p>建立 java 层的 installer 与 c 层的 installd 的 socket 联接,使得在上层的 install,remove,dexopt等功能最终由 installd 在底层实现</p>
+</li>
+<li><p>建 立 PackageHandler 消 息 循 环 , 用 于 处 理 外 部 的 apk 安 装 请 求 消 息 , 如 adbinstall,packageinstaller 安装 apk 时会发送消息 </p>
+</li>
+<li><p>解析/system/etc/permission 下 xml 文件(framework/base/data/etc/),包括 platform.xml 和系统支持的各种硬件模块的 feature.主要工作:</p>
+<pre><code>(1) 建立底层 user ids 和 group ids 同上层 permissions 之间的映射;可以指定一个权限与几个组 ID 对应。当一个 APK 被授予这个权限时,它也同时属于这几个组。 
+(2) 给一些底层用户分配权限,如给 shell 授予各种 permission 权限;把一个权限赋予一个UID,当进程使用这个 UID 运行时,就具备了这个权限。 
+(3) library,系统增加的一些应用需要 link 的扩展 jar 库; 
+(4) feature, 系 统 每 增 加 一 个 硬 件 , 都 要 添 加 相 应 的 feature. 将 解 析 结 果mSystemPermissions,mSharedLibraries,mSettings.mPermissions,mAvailableFeatures  等几个集合中供系统查询和权限配置使用。 
+</code></pre><ol>
+<li><p>检查/data/system/packages.xml 是否存在,这个文件是在解析 apk 时由writeLP()创建的,里面记录了系统的 permissions,以及每个 apk  name,codePath,flags,ts,version,uesrid 等信息,这些信息主要通过 apk 的AndroidManifest.xml 解析获取,解析完 apk 后将更新信息写入这个文件并保存到 flash,下次开机直接从里面读取相关信息添加到内存相关列表中。当有 apk升级,安装或删除时会更新这个文件。 </p>
+</li>
+<li><p>检查 BootClassPath,mSharedLibraries 及/system/framework 下的 jar是否需要 dexopt,需要的则通过 dexopt 进行优化 </p>
+</li>
+<li><p>启动 AppDirObserver 线程监测/system/framework,/system/app,/data/app,/data/app-private 目录的事件,主要监听 add 和 remove 事件。对于目录监听底层通过inotify 机制实现,inotify 是一种文件系统的变化通知机制,如文件增加、删除等事件可以立刻让用户态得知,它为用户态监视文件系统的变化提供了强大的支持。当有 add event 时调用 scanPackageLI(File , int , int)处理;当有 remove event 时调用 removePackageLI()处理; </p>
+</li>
+<li><p>对于以上几个目录下的 apk 逐个解析,主要是解析每个 apk 的 AndroidMa-nifest.xml 文件,处理 asset/res 等资源文件,建立起每个 apk 的配置结构信息,并将每个 apk 的配置信息添加到全局列表进行管理。调用 installer.install()进行安装工作,检查 apk 里的 dex 文件是否需要再优化,如果需要优化则通过辅助工具 dexopt 进行优化处理;将解析出的 componet 添加到 pkg 的对应列表里;对 apk 进行签名和证书校验,进行完整性验证。 </p>
+</li>
+<li><p>将解析的每个 apk 的信息保存到 packages.xml 和 packages.list 文件里,<br>packages.list 记录了如下数据:pkgName,userId,debugFlag,dataPath(包的数据路径) </p>
+</li>
+</ol>
+</li>
+</ol>
+<p><img src="http://static.open-open.com/lib/uploadImg/20120209/20120209162823_114.gif" alt=""></p>
+<p>scanDirLI 流程分析:</p>
+<p><img src="http://static.open-open.com/lib/uploadImg/20120209/20120209162824_272.gif" alt=""></p>
+<p><img src="http://static.open-open.com/lib/uploadImg/20120209/20120209162825_662.gif" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/wechat-qcode.jpg" alt="Winner Liu wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+            <a href="/tags/PackageManagerService/" rel="tag"># PackageManagerService</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/08/深入理解ViewRoot/" rel="next" title="深入理解ViewRoot">
+                <i class="fa fa-chevron-left"></i> 深入理解ViewRoot
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/08/深入理解PMS-PowerManagerService/" rel="prev" title="深入理解PMS-PowerManagerService">
+                深入理解PMS-PowerManagerService <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Winner Liu" />
+            
+              <p class="site-author-name" itemprop="name">Winner Liu</p>
+              <p class="site-description motion-element" itemprop="description">燃烧吧，我的小宇宙！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#一-概述"><span class="nav-number">1.</span> <span class="nav-text">一.概述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#第一阶段工作总结"><span class="nav-number">2.</span> <span class="nav-text">第一阶段工作总结</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#第二阶段工作总结"><span class="nav-number">3.</span> <span class="nav-text">第二阶段工作总结</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#APK-安装流程总结"><span class="nav-number">4.</span> <span class="nav-text">APK 安装流程总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Winner Liu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

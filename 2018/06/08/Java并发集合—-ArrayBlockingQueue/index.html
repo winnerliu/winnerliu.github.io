@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言  本文的主要详细分析ArrayBlockingQueue的实现原理，由于该并发集合其底层是使用了java.util.ReentrantLock和java.util.Condition来完成并发控制的，我们可以通过JDK的源代码更好的学习这些并发控制类的使用，同时该类也是所有并发集合中最简单的一个，分析该类的源码也是为之后分析其他并发集合做好基础。
+一、Queue接口和BlockingQueu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java并发集合—/ArrayBlockingQueue">
+<meta property="og:url" content="http://yoursite.com/2018/06/08/Java并发集合—-ArrayBlockingQueue/index.html">
+<meta property="og:site_name" content="WinnerCode">
+<meta property="og:description" content="前言  本文的主要详细分析ArrayBlockingQueue的实现原理，由于该并发集合其底层是使用了java.util.ReentrantLock和java.util.Condition来完成并发控制的，我们可以通过JDK的源代码更好的学习这些并发控制类的使用，同时该类也是所有并发集合中最简单的一个，分析该类的源码也是为之后分析其他并发集合做好基础。
+一、Queue接口和BlockingQueu">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1684370-ca508b8735c40257.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1684370-74dd3cf6fd2be432.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1684370-bdbe3fe4f43d5130.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-06-08T03:23:58.544Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java并发集合—/ArrayBlockingQueue">
+<meta name="twitter:description" content="前言  本文的主要详细分析ArrayBlockingQueue的实现原理，由于该并发集合其底层是使用了java.util.ReentrantLock和java.util.Condition来完成并发控制的，我们可以通过JDK的源代码更好的学习这些并发控制类的使用，同时该类也是所有并发集合中最简单的一个，分析该类的源码也是为之后分析其他并发集合做好基础。
+一、Queue接口和BlockingQueu">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1684370-ca508b8735c40257.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/08/Java并发集合—-ArrayBlockingQueue/"/>
+
+
+
+
+
+  <title>Java并发集合—/ArrayBlockingQueue | WinnerCode</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?642f81466b73ae68d2149c1678952ac8";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WinnerCode</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Java并发集合—-ArrayBlockingQueue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Winner Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WinnerCode">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java并发集合—/ArrayBlockingQueue</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T11:23:20+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java并发/" itemprop="url" rel="index">
+                    <span itemprop="name">Java并发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>  本文的主要详细分析ArrayBlockingQueue的实现原理，由于该并发集合其底层是使用了java.util.ReentrantLock和java.util.Condition来完成并发控制的，我们可以通过JDK的源代码更好的学习这些并发控制类的使用，同时该类也是所有并发集合中最简单的一个，分析该类的源码也是为之后分析其他并发集合做好基础。</p>
+<h2 id="一、Queue接口和BlockingQueue接口回顾"><a href="#一、Queue接口和BlockingQueue接口回顾" class="headerlink" title="一、Queue接口和BlockingQueue接口回顾"></a>一、Queue接口和BlockingQueue接口回顾</h2><h3 id="1-1-Queue接口回顾"><a href="#1-1-Queue接口回顾" class="headerlink" title="1.1 Queue接口回顾"></a>1.1 Queue接口回顾</h3><blockquote>
+<p>在Queue接口中，除了继承Collection接口中定义的方法外，它还分别额外地定义<strong>插入、删除、查询</strong>这3个操作，其中每一个操作都以两种不同的形式存在，每一种形式都对应着一个方法。</p>
+</blockquote>
+<p>方法说明：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Throws exception</th>
+<th>Returns special value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Insert</strong></td>
+<td>add(e)</td>
+<td>offer(e)</td>
+</tr>
+<tr>
+<td><strong>Remove</strong></td>
+<td>remove()</td>
+<td>poll()</td>
+</tr>
+<tr>
+<td><strong>Examine</strong></td>
+<td>element()</td>
+<td>peek()</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>add方法在将一个元素插入到队列的尾部时，如果出现队列已经满了，那么就会抛出IllegalStateException,而使用offer方法时，如果队列满了，则添加失败,返回false,但并不会引发异常。</li>
+<li>remove方法是获取队列的头部元素并且删除，如果当队列为空时，那么就会抛出NoSuchElementException。而poll在队列为空时，则返回一个null。</li>
+<li>element方法是从队列中获取到队列的第一个元素，但不会删除，但是如果队列为空时，那么它就会抛出NoSuchElementException。peek方法与之类似，只是不会抛出异常，而是返回false。</li>
+</ol>
+<p>后面我们在分析ArrayBlockingQueue的方法时，主要也是围绕着这几个方法来进行分析。</p>
+<h3 id="1-2-BlockingQueue接口回顾"><a href="#1-2-BlockingQueue接口回顾" class="headerlink" title="1.2 BlockingQueue接口回顾"></a>1.2 BlockingQueue接口回顾</h3><blockquote>
+<p>BlockingQueue是JDK1.5出现的接口，它在原来的Queue接口基础上提供了更多的额外功能：当获取队列中的头部元素时，如果队列为空，那么它将会使执行线程处于等待状态；当添加一个元素到队列的尾部时，如果队列已经满了，那么它同样会使执行的线程处于等待状态。</p>
+</blockquote>
+<p>前面我们在说Queue接口时提到过，它针对于相同的操作提供了2种不同的形式，而BlockingQueue更夸张，针对于相同的操作提供了4种不同的形式。</p>
+<blockquote>
+<p>该四种形式分别为：</p>
+<ol>
+<li>抛出异常  </li>
+<li>返回一个特殊值(可能是null或者是false，取决于具体的操作)</li>
+<li>阻塞当前执行直到其可以继续</li>
+<li>当线程被挂起后，等待最大的时间，如果一旦超时，即使该操作依旧无法继续执行，线程也不会再继续等待下去。</li>
+</ol>
+</blockquote>
+<p>对应的方法说明:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Throws exception</th>
+<th>Returns special value</th>
+<th>Blocks</th>
+<th>Times out</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Insert</strong></td>
+<td>add(e)</td>
+<td>offer(e)</td>
+<td>put(e)</td>
+<td>offer(e, time, unit)</td>
+</tr>
+<tr>
+<td><strong>Remove</strong></td>
+<td>remove()</td>
+<td>poll()</td>
+<td>take()</td>
+<td>poll(time, unit)</td>
+</tr>
+<tr>
+<td><strong>Examine</strong></td>
+<td>element()</td>
+<td>peek()</td>
+<td>无</td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+<p>BlockingQueue虽然比起Queue在操作上提供了更多的支持，但是它在使用有如下的几点:</p>
+<blockquote>
+<ol>
+<li>BlockingQueue中是不允许添加null的，该接受在声明的时候就要求所有的实现类在接收到一个null的时候，都应该抛出NullPointerException。</li>
+<li>BlockingQueue是线程安全的，因此它的所有和队列相关的方法都具有原子性。但是对于那么从Collection接口中继承而来的批量操作方法，比如addAll(Collection e)等方法，BlockingQueue的实现通常没有保证其具有原子性，因此我们在使用的BlockingQueue，应该尽可能地不去使用这些方法。</li>
+<li>BlockingQueue主要应用于生产者与消费者的模型中，其元素的添加和获取都是极具规律性的。但是对于remove(Object o)这样的方法，虽然BlockingQueue可以保证元素正确的删除，但是这样的操作会非常响应性能，因此我们在没有特殊的情况下，也应该避免使用这类方法。</li>
+</ol>
+</blockquote>
+<h2 id="二、ArrayBlockingQueue深入分析"><a href="#二、ArrayBlockingQueue深入分析" class="headerlink" title="二、ArrayBlockingQueue深入分析"></a>二、ArrayBlockingQueue深入分析</h2><p>有了上面的铺垫，下面我们就可以真正开始分析ArrayBlockingQueue了。在分析之前，首先让我们看看API对其的描述。<br><strong>注意:这里使用的JDK版本为1.7，不同的JDK版本在实现上存在不同</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1684370-ca508b8735c40257.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>首先让我们看下ArrayBlockingQueue的核心组成：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 底层维护队列元素的数组 */</span></div><div class="line">   <span class="keyword">final</span> Object[] items;</div><div class="line"></div><div class="line">   <span class="comment">/**  当读取元素时数组的下标(这里称为读下标) */</span></div><div class="line">   <span class="keyword">int</span> takeIndex;</div><div class="line"></div><div class="line">   <span class="comment">/** 添加元素时数组的下标 (这里称为写小标)*/</span></div><div class="line">   <span class="keyword">int</span> putIndex;</div><div class="line"></div><div class="line">   <span class="comment">/** 队列中的元素个数 */</span></div><div class="line">   <span class="keyword">int</span> count;</div><div class="line"></div><div class="line">   <span class="comment">/**用于并发控制的工具类**/</span></div><div class="line">   <span class="keyword">final</span> ReentrantLock lock;</div><div class="line"></div><div class="line">   <span class="comment">/** 控制take操作时是否让线程等待 */</span></div><div class="line">   <span class="keyword">private</span> <span class="keyword">final</span> Condition notEmpty;</div><div class="line"></div><div class="line">   <span class="comment">/** 控制put操作时是否让线程等待 */</span></div><div class="line">   <span class="keyword">private</span> <span class="keyword">final</span> Condition notFull;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>take方法分析(369-379行):</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> E <span class="title">take</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</div><div class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</div><div class="line">    <span class="comment">/*</span></div><div class="line">        尝试获取锁，如果此时锁被其他线程锁占用，那么当前线程就处于Waiting的状态。           </div><div class="line">        注意:当方法是支持线程中断响应的如果其他线程此时中断当前线程，</div><div class="line">        那么当前线程就会抛出InterruptedException </div><div class="line">     */</div><div class="line">    lock.lockInterruptibly();</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="comment">/*</span></div><div class="line">      如果此时队列中的元素个数为0,那么就让当前线程wait,并且释放锁。</div><div class="line">      注意:这里使用了while进行重复检查，是为了防止当前线程可能由于其他未知的原因被唤醒。</div><div class="line">      (通常这种情况被称为"spurious wakeup")</div><div class="line">        */    </div><div class="line">    <span class="keyword">while</span> (count == <span class="number">0</span>)</div><div class="line">            notEmpty.await();</div><div class="line">        <span class="comment">//如果队列不为空，则从队列的头部取元素</span></div><div class="line">        <span class="keyword">return</span> extract();</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">         <span class="comment">//完成锁的释放</span></div><div class="line">        lock.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>extract方法分析(163-171):</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line">  根据takeIndex来获取当前的元素,然后通知其他等待的线程。</div><div class="line">  Call only when holding lock.(只有当前线程已经持有了锁之后，它才能调用该方法)</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> E <span class="title">extract</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> Object[] items = <span class="keyword">this</span>.items;</div><div class="line"></div><div class="line">    <span class="comment">//根据takeIndex获取元素,因为元素是一个Object类型的数组,因此它通过cast方法将其转换成泛型。</span></div><div class="line">    E x = <span class="keyword">this</span>.&lt;E&gt;cast(items[takeIndex]);</div><div class="line"></div><div class="line">    <span class="comment">//将当前位置的元素设置为null</span></div><div class="line">    items[takeIndex] = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="comment">//并且将takeIndex++,注意：这里因为已经使用了锁，因此inc方法中没有使用到原子操作</span></div><div class="line">    takeIndex = inc(takeIndex);</div><div class="line"></div><div class="line">    <span class="comment">//将队列中的总的元素减1</span></div><div class="line">    --count;</div><div class="line">    <span class="comment">//唤醒其他等待的线程</span></div><div class="line">    notFull.signal();</div><div class="line">    <span class="keyword">return</span> x;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>put方法分析(318-239)</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(E e)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</div><div class="line">    <span class="comment">//首先检查元素是否为空，否则抛出NullPointerException</span></div><div class="line">    checkNotNull(e);</div><div class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</div><div class="line">    <span class="comment">//进行锁的抢占</span></div><div class="line">    lock.lockInterruptibly();</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="comment">/*当队列的长度等于数组的长度,此时说明队列已经满了,这里同样</span></div><div class="line">          使用了while来方式当前线程被"伪唤醒"。*/</div><div class="line">        <span class="keyword">while</span> (count == items.length)</div><div class="line">            <span class="comment">//则让当前线程处于等待状态</span></div><div class="line">            notFull.await();</div><div class="line">        <span class="comment">//一旦获取到锁并且队列还未满时，则执行insert操作。</span></div><div class="line">        insert(e);</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        <span class="comment">//完成锁的释放</span></div><div class="line">        lock.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">  <span class="comment">//检查元素是否为空</span></div><div class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">checkNotNull</span><span class="params">(Object v)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (v == <span class="keyword">null</span>)</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</div><div class="line">  &#125;</div><div class="line"></div><div class="line"> <span class="comment">//该方法的逻辑非常简单</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(E x)</span> </span>&#123;</div><div class="line">    <span class="comment">//将当前元素设置到putIndex位置   </span></div><div class="line">    items[putIndex] = x;</div><div class="line">    <span class="comment">//让putIndex++</span></div><div class="line">    putIndex = inc(putIndex);</div><div class="line">    <span class="comment">//将队列的大小加1</span></div><div class="line">    ++count;</div><div class="line">    <span class="comment">//唤醒其他正在处于等待状态的线程</span></div><div class="line">    notEmpty.signal();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>注:ArrayBlockingQueue其实是一个循环队列</strong><br>我们使用一个图来简单说明一下:</p>
+<blockquote>
+<p><code>黄色表示数组中有元素</code></p>
+</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/1684370-74dd3cf6fd2be432.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>当再一次执行put的时候,其结果为：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1684370-bdbe3fe4f43d5130.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>此时放入的元素会从头开始置，我们通过其incr方法更加清晰的看出其底层的操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Circularly increment i.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">int</span> <span class="title">inc</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</div><div class="line">    <span class="comment">//当takeIndex的值等于数组的长度时,就会重新置为0，这个一个循环递增的过程</span></div><div class="line">    <span class="keyword">return</span> (++i == items.length) ? <span class="number">0</span> : i;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>至此，ArrayBlockingQueue的核心部分就分析完了，其余的队列操作基本上都是换汤不换药的，此处不再一一列举。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/wechat-qcode.jpg" alt="Winner Liu wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/08/深入理解ReentrantLock/" rel="next" title="深入理解ReentrantLock">
+                <i class="fa fa-chevron-left"></i> 深入理解ReentrantLock
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/08/Java并发集合—-LinkedBlockingQueue/" rel="prev" title="Java并发集合—/LinkedBlockingQueue">
+                Java并发集合—/LinkedBlockingQueue <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Winner Liu" />
+            
+              <p class="site-author-name" itemprop="name">Winner Liu</p>
+              <p class="site-description motion-element" itemprop="description">燃烧吧，我的小宇宙！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、Queue接口和BlockingQueue接口回顾"><span class="nav-number"></span> <span class="nav-text">一、Queue接口和BlockingQueue接口回顾</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-Queue接口回顾"><span class="nav-number">1.</span> <span class="nav-text">1.1 Queue接口回顾</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-BlockingQueue接口回顾"><span class="nav-number">2.</span> <span class="nav-text">1.2 BlockingQueue接口回顾</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、ArrayBlockingQueue深入分析"><span class="nav-number"></span> <span class="nav-text">二、ArrayBlockingQueue深入分析</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Winner Liu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

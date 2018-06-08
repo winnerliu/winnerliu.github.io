@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、线程间通信的两种方式1.wait()/notify()Object类中相关的方法有notify方法和wait方法。因为wait和notify方法定义在Object类中，因此会被所有的类所继承。这些方法都是final的，即它们都是不能被重写的，不能通过子类覆写去改变它们的行为。
+①wait()方法：让当前线程进入等待，并释放锁。
+②wait(long)方法：让当前线程进入等待，并释放锁，不过等待">
+<meta property="og:type" content="article">
+<meta property="og:title" content="生产者/消费者模式">
+<meta property="og:url" content="http://yoursite.com/2018/06/08/生产者-消费者模式/index.html">
+<meta property="og:site_name" content="WinnerCode">
+<meta property="og:description" content="一、线程间通信的两种方式1.wait()/notify()Object类中相关的方法有notify方法和wait方法。因为wait和notify方法定义在Object类中，因此会被所有的类所继承。这些方法都是final的，即它们都是不能被重写的，不能通过子类覆写去改变它们的行为。
+①wait()方法：让当前线程进入等待，并释放锁。
+②wait(long)方法：让当前线程进入等待，并释放锁，不过等待">
+<meta property="og:updated_time" content="2018-06-08T03:19:33.054Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="生产者/消费者模式">
+<meta name="twitter:description" content="一、线程间通信的两种方式1.wait()/notify()Object类中相关的方法有notify方法和wait方法。因为wait和notify方法定义在Object类中，因此会被所有的类所继承。这些方法都是final的，即它们都是不能被重写的，不能通过子类覆写去改变它们的行为。
+①wait()方法：让当前线程进入等待，并释放锁。
+②wait(long)方法：让当前线程进入等待，并释放锁，不过等待">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/08/生产者-消费者模式/"/>
+
+
+
+
+
+  <title>生产者/消费者模式 | WinnerCode</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?642f81466b73ae68d2149c1678952ac8";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WinnerCode</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/生产者-消费者模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Winner Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WinnerCode">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">生产者/消费者模式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T11:19:11+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java并发/" itemprop="url" rel="index">
+                    <span itemprop="name">Java并发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="一、线程间通信的两种方式"><a href="#一、线程间通信的两种方式" class="headerlink" title="一、线程间通信的两种方式"></a>一、线程间通信的两种方式</h3><h5 id="1-wait-notify"><a href="#1-wait-notify" class="headerlink" title="1.wait()/notify()"></a>1.wait()/notify()</h5><p>Object类中相关的方法有notify方法和wait方法。因为wait和notify方法定义在Object类中，因此会被所有的类所继承。这些方法都是<strong>final</strong>的，即它们都是不能被重写的，不能通过子类覆写去改变它们的行为。</p>
+<p><strong>①wait()方法：</strong>让当前线程进入等待，并释放锁。</p>
+<p><strong>②wait(long)方法：</strong>让当前线程进入等待，并释放锁，不过等待时间为long，超过这个时间没有对当前线程进行唤醒，将自动唤醒。</p>
+<p><strong>③notify()方法：</strong>让当前线程通知那些处于等待状态的线程，当前线程执行完毕后释放锁，并从其他线程中唤醒其中一个继续执行。</p>
+<p><strong>④notifyAll()方法：</strong>让当前线程通知那些处于等待状态的线程，当前线程执行完毕后释放锁，将唤醒所有等待状态的线程。</p>
+<h5 id="wait-方法使用注意事项"><a href="#wait-方法使用注意事项" class="headerlink" title="wait()方法使用注意事项"></a>wait()方法使用注意事项</h5><p>①当前的线程必须拥有当前对象的monitor，也即lock，就是锁，才能调用wait()方法，否则将抛出异常java.lang.IllegalMonitorStateException。</p>
+<p>②线程调用wait()方法，释放它对锁的拥有权，然后等待另外的线程来通知它（通知的方式是notify()或者notifyAll()方法），这样它才能重新获得锁的拥有权和恢复执行。</p>
+<p>③要确保调用wait()方法的时候拥有锁，即，wait()方法的调用必须放在synchronized方法或synchronized块中。<br><strong>wait()与sleep()比较</strong></p>
+<p>当线程调用了wait()方法时，它会释放掉对象的锁。</p>
+<p>Thread.sleep()，它会导致线程睡眠指定的毫秒数，但线程在睡眠的过程中是不会释放掉对象的锁的。</p>
+<h5 id="notify-方法使用注意事项"><a href="#notify-方法使用注意事项" class="headerlink" title="notify()方法使用注意事项"></a>notify()方法使用注意事项</h5><p>①如果多个线程在等待，它们中的一个将会选择被唤醒。这种选择是随意的，和具体实现有关。（线程等待一个对象的锁是由于调用了wait()方法）。</p>
+<p>②被唤醒的线程是不能被执行的，需要等到当前线程放弃这个对象的锁，当前线程会在方法执行完毕后释放锁。</p>
+<h5 id="wait-notify-协作的两个注意事项"><a href="#wait-notify-协作的两个注意事项" class="headerlink" title="wait()/notify()协作的两个注意事项"></a>wait()/notify()协作的两个注意事项</h5><p>①通知过早</p>
+<p>如果通知过早，则会打乱程序的运行逻辑。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyRun</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> String lock = <span class="keyword">new</span> String(<span class="string">""</span>);</div><div class="line">    <span class="keyword">public</span> Runnable runnableA = <span class="keyword">new</span> Runnable() &#123;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="keyword">synchronized</span> (lock) &#123;</div><div class="line">                    System.out.println(<span class="string">"begin wait"</span>);</div><div class="line">                    lock.wait();</div><div class="line">                    System.out.println(<span class="string">"end wait"</span>);</div><div class="line">                &#125;</div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">    <span class="keyword">public</span> Runnable runnableB = <span class="keyword">new</span> Runnable() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="keyword">synchronized</span> (lock) &#123;</div><div class="line">                System.out.println(<span class="string">"begin notify"</span>);</div><div class="line">                lock.notify();</div><div class="line">                System.out.println(<span class="string">"end notify"</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>两个方法，分别执行wait()/notify()方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</div><div class="line">        MyRun run = <span class="keyword">new</span> MyRun();</div><div class="line">        Thread bThread = <span class="keyword">new</span> Thread(run.runnableB);</div><div class="line">        bThread.start();</div><div class="line">        Thread.sleep(<span class="number">100</span>);</div><div class="line">        Thread aThread = <span class="keyword">new</span> Thread(run.runnableA);</div><div class="line">        aThread.start();</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>如果notify()方法先执行，将导致wait()方法释放锁进入等待状态后，永远无法被唤醒，影响程序逻辑。应避免这种情况。</p>
+<p>②等待wait的条件发生变化</p>
+<p>在使用wait/notify模式时，还需要注意另外一种情况，也就是wait等待条件发生了变化，也容易造成程序逻辑的混乱。</p>
+<p><strong>Add类，执行加法操作，然后通知Subtract类</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Add</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> String lock;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Add</span><span class="params">(String lock)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">        <span class="keyword">this</span>.lock = lock;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">synchronized</span> (lock) &#123;</div><div class="line">            ValueObject.list.add(<span class="string">"anyThing"</span>);</div><div class="line">            lock.notifyAll();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>Subtract类，执行减法操作，执行完后进入等待状态，等待Add类唤醒notify</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Subtract</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> String lock;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Subtract</span><span class="params">(String lock)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">        <span class="keyword">this</span>.lock = lock;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">subtract</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">synchronized</span> (lock) &#123;</div><div class="line">                <span class="keyword">if</span>(ValueObject.list.size()==<span class="number">0</span>)&#123;</div><div class="line">                    System.out.println(<span class="string">"wait begin ThreadName="</span>+Thread.currentThread().getName());</div><div class="line">                    lock.wait();</div><div class="line">                    System.out.println(<span class="string">"wait end ThreadName="</span>+Thread.currentThread().getName());</div><div class="line">                &#125;</div><div class="line">                ValueObject.list.remove(<span class="number">0</span>);</div><div class="line">                System.out.println(<span class="string">"list size ="</span>+ValueObject.list.size());</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>线程ThreadAdd </strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadAdd</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> Add pAdd;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadAdd</span><span class="params">(Add pAdd)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">        <span class="keyword">this</span>.pAdd = pAdd;</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        pAdd.add();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>线程ThreadSubtract </strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadSubtract</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> Subtract rSubtract;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadSubtract</span><span class="params">(Subtract rSubtract)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">        <span class="keyword">this</span>.rSubtract = rSubtract;</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        rSubtract.subtract();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>先开启两个ThreadSubtract线程，由于list中没有元素，进入等待状态。再开启一个ThreadAdd线程，向list中增加一个元素，然后唤醒两个ThreadSubtract线程</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</div><div class="line">        String lock = <span class="keyword">new</span> String(<span class="string">""</span>);</div><div class="line">        Add add = <span class="keyword">new</span> Add(lock);</div><div class="line">        Subtract subtract = <span class="keyword">new</span> Subtract(lock);</div><div class="line">        ThreadSubtract subtractThread1 = <span class="keyword">new</span> ThreadSubtract(subtract);</div><div class="line">        subtractThread1.setName(<span class="string">"subtractThread1"</span>);</div><div class="line">        subtractThread1.start();</div><div class="line">        ThreadSubtract subtractThread2 = <span class="keyword">new</span> ThreadSubtract(subtract);</div><div class="line">        subtractThread2.setName(<span class="string">"subtractThread2"</span>);</div><div class="line">        subtractThread2.start();</div><div class="line">        Thread.sleep(<span class="number">1000</span>);</div><div class="line">        ThreadAdd addThread = <span class="keyword">new</span> ThreadAdd(add);</div><div class="line">        addThread.setName(<span class="string">"addThread"</span>);</div><div class="line">        addThread.start();</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>输出结果</p>
+<blockquote>
+<p>wait begin ThreadName=subtractThread1<br>wait begin ThreadName=subtractThread2<br>wait end ThreadName=subtractThread2<br>Exception in thread “subtractThread1” list size =0<br>wait end ThreadName=subtractThread1<br>java.lang.IndexOutOfBoundsException: Index: 0, Size: 0<br>    at java.util.ArrayList.rangeCheck(Unknown Source)<br>    at java.util.ArrayList.remove(Unknown Source)<br>    at com.lvr.communication.Subtract.subtract(Subtract.java:18)<br>    at com.lvr.communication.ThreadSubtract.run(ThreadSubtract.java:12)</p>
+</blockquote>
+<p><strong>当第二个ThreadSubtract线程执行减法操作时，抛出下标越界异常。</strong></p>
+<p><strong>原因分析：一开始两个ThreadSubtract线程等待状态，当ThreadAdd线程添加一个元素并唤醒所有线程后，第一个ThreadSubtract线程接着原来的执行到的地点开始继续执行，删除一个元素并输出集合大小。同样，第二个ThreadSubtract线程也如此，可是此时集合中已经没有元素了，所以抛出异常。</strong></p>
+<p><strong>解决办法：从等待状态被唤醒后，重新判断条件，看看是否扔需要进入等待状态，不需要进入再进行下一步操作。即把if()判断，改成while()。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">subtract</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">synchronized</span> (lock) &#123;</div><div class="line">                <span class="keyword">while</span>(ValueObject.list.size()==<span class="number">0</span>)&#123;</div><div class="line">                    System.out.println(<span class="string">"wait begin ThreadName="</span>+Thread.currentThread().getName());</div><div class="line">                    lock.wait();</div><div class="line">                    System.out.println(<span class="string">"wait end ThreadName="</span>+Thread.currentThread().getName());</div><div class="line">                &#125;</div><div class="line">                ValueObject.list.remove(<span class="number">0</span>);</div><div class="line">                System.out.println(<span class="string">"list size ="</span>+ValueObject.list.size());</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>这是线程间协作中经常出现的一种情况，需要避免。</p>
+<h3 id="2-Condition实现等待-通知"><a href="#2-Condition实现等待-通知" class="headerlink" title="2.Condition实现等待/通知"></a>2.Condition实现等待/通知</h3><p>关键字synchronized与wait()和notify()/notifyAll()方法相结合可以实现等待/通知模式，类似ReentrantLock也可以实现同样的功能，但需要借助于Condition对象。</p>
+<p>关于Condition实现等待/通知就不详细介绍了，可以完全类比wait()/notify()，基本使用和注意事项完全一致。<br>就只简单介绍下类比情况：</p>
+<p><strong>condition.await()————&gt;lock.wait()</strong></p>
+<p><strong>condition.await(long time, TimeUnit unit)————&gt;lock.wait(long timeout)</strong></p>
+<p><strong>condition.signal()————&gt;lock.notify()</strong></p>
+<p><strong>condition.signaAll()————&gt;lock.notifyAll()</strong></p>
+<p><strong>特殊之处：synchronized相当于整个ReentrantLock对象只有一个单一的Condition对象情况。而一个ReentrantLock却可以拥有多个Condition对象，来实现通知部分线程。</strong></p>
+<p><strong>具体实现方式：</strong><br>假设有两个Condition对象：ConditionA和ConditionB。那么由ConditionA.await()方法进入等待状态的线程，由ConditionA.signalAll()通知唤醒；由ConditionB.await()方法进入等待状态的线程，由ConditionB.signalAll()通知唤醒。篇幅有限，代码示例就不写了。</p>
+<h3 id="二、生产者-消费者模式实现"><a href="#二、生产者-消费者模式实现" class="headerlink" title="二、生产者/消费者模式实现"></a>二、生产者/消费者模式实现</h3><h5 id="1-一生产与一消费"><a href="#1-一生产与一消费" class="headerlink" title="1.一生产与一消费"></a>1.一生产与一消费</h5><p>下面情形是一个生产者，一个消费者的模式。假设场景：一个String对象，其中生产者为其设置值，消费者拿走其中的值，不断的循环往复，实现生产者/消费者的情形。</p>
+<p><strong>wait()/notify()实现</strong></p>
+<p>生产者</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Product</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> String lock;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Product</span><span class="params">(String lock)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">        <span class="keyword">this</span>.lock = lock;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setValue</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">synchronized</span> (lock) &#123;</div><div class="line">                <span class="keyword">if</span>(!StringObject.value.equals(<span class="string">""</span>))&#123;</div><div class="line">                    <span class="comment">//有值，不生产</span></div><div class="line">                    lock.wait();</div><div class="line">                &#125;</div><div class="line">                String  value = System.currentTimeMillis()+<span class="string">""</span>+System.nanoTime();</div><div class="line">                System.out.println(<span class="string">"set的值是："</span>+value);</div><div class="line">                StringObject.value = value;</div><div class="line">                lock.notify();</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>消费者</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Consumer</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> String lock;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Consumer</span><span class="params">(String lock)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">        <span class="keyword">this</span>.lock = lock;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getValue</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">synchronized</span> (lock) &#123;</div><div class="line">                <span class="keyword">if</span>(StringObject.value.equals(<span class="string">""</span>))&#123;</div><div class="line">                    <span class="comment">//没值，不进行消费</span></div><div class="line">                    lock.wait();</div><div class="line">                &#125;</div><div class="line">                System.out.println(<span class="string">"get的值是："</span>+StringObject.value);</div><div class="line">                StringObject.value = <span class="string">""</span>;</div><div class="line">                lock.notify();</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>生产者线程</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadProduct</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> Product product;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadProduct</span><span class="params">(Product product)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">        <span class="keyword">this</span>.product = product;</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">//死循环，不断的生产</span></div><div class="line">        <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</div><div class="line">            product.setValue();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>消费者线程</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadConsumer</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> Consumer consumer;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadConsumer</span><span class="params">(Consumer consumer)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">        <span class="keyword">this</span>.consumer = consumer;</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">//死循环，不断的消费</span></div><div class="line">        <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</div><div class="line">            consumer.getValue();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>开启生产者/消费者模式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</div><div class="line">        String lock = <span class="keyword">new</span> String(<span class="string">""</span>);</div><div class="line">        Product product = <span class="keyword">new</span> Product(lock);</div><div class="line">        Consumer consumer = <span class="keyword">new</span> Consumer(lock);</div><div class="line">        ThreadProduct pThread = <span class="keyword">new</span> ThreadProduct(product);</div><div class="line">        ThreadConsumer cThread = <span class="keyword">new</span> ThreadConsumer(consumer);</div><div class="line">        pThread.start();</div><div class="line">        cThread.start();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出结果：</p>
+<blockquote>
+<p>set的值是：148827033184127168687409691<br>get的值是：148827033184127168687409691<br>set的值是：148827033184127168687449887<br>get的值是：148827033184127168687449887<br>set的值是：148827033184127168687475117<br>get的值是：148827033184127168687475117</p>
+</blockquote>
+<p>Condition方式实现类似，篇幅有限不全部贴出来。</p>
+<h5 id="2-多生产与多消费"><a href="#2-多生产与多消费" class="headerlink" title="2.多生产与多消费"></a>2.多生产与多消费</h5><p><strong>特殊情况：</strong>按照上述一生产与一消费的情况，通过创建多个生产者和消费者线程，实现多生产与多消费的情况，将会出现“假死”。</p>
+<p><strong>具体原因：</strong>多个生产者和消费者线程。当全部运行后，生产者线程生产数据后，可能唤醒的同类即生产者线程。此时可能会出现如下情况：所有生产者线程进入等待状态，然后消费者线程消费完数据后，再次唤醒的还是消费者线程，直至所有消费者线程都进入等待状态，此时将进入“假死”。</p>
+<p><strong>解决方法：</strong>将notify()或signal()方法改为notifyAll()或signalAll()方法，这样就不怕因为唤醒同类而进入“假死”状态了。</p>
+<p><strong>Condition方式实现</strong><br>生产者</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Product</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> ReentrantLock lock;</div><div class="line">    <span class="keyword">private</span> Condition condition;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Product</span><span class="params">(ReentrantLock lock, Condition condition)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">        <span class="keyword">this</span>.lock = lock;</div><div class="line">        <span class="keyword">this</span>.condition = condition;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setValue</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            lock.lock();</div><div class="line">            <span class="keyword">while</span> (!StringObject.value.equals(<span class="string">""</span>)) &#123;</div><div class="line">                <span class="comment">// 有值，不生产</span></div><div class="line">                condition.await();</div><div class="line">            &#125;</div><div class="line">            String value = System.currentTimeMillis() + <span class="string">""</span> + System.nanoTime();</div><div class="line">            System.out.println(<span class="string">"set的值是："</span> + value);</div><div class="line">            StringObject.value = value;</div><div class="line">            condition.signalAll();</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;<span class="keyword">finally</span> &#123;</div><div class="line">            lock.unlock();</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>消费者</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Consumer</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> ReentrantLock lock;</div><div class="line">    <span class="keyword">private</span> Condition condition;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Consumer</span><span class="params">(ReentrantLock lock,Condition condition)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">        <span class="keyword">this</span>.lock = lock;</div><div class="line">        <span class="keyword">this</span>.condition = condition;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getValue</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">                lock.lock();</div><div class="line">                <span class="keyword">while</span>(StringObject.value.equals(<span class="string">""</span>))&#123;</div><div class="line">                    <span class="comment">//没值，不进行消费</span></div><div class="line">                    condition.await();</div><div class="line">                &#125;</div><div class="line">                System.out.println(<span class="string">"get的值是："</span>+StringObject.value);</div><div class="line">                StringObject.value = <span class="string">""</span>;</div><div class="line">                condition.signalAll();</div><div class="line"></div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;<span class="keyword">finally</span> &#123;</div><div class="line">            lock.unlock();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>生产者线程和消费者线程与一生产一消费的模式相同。</p>
+<p>开启多生产/多消费模式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</div><div class="line">        ReentrantLock lock = <span class="keyword">new</span> ReentrantLock();</div><div class="line">        Condition newCondition = lock.newCondition();</div><div class="line">        Product product = <span class="keyword">new</span> Product(lock,newCondition);</div><div class="line">        Consumer consumer = <span class="keyword">new</span> Consumer(lock,newCondition);</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">3</span>;i++)&#123;</div><div class="line">            ThreadProduct pThread = <span class="keyword">new</span> ThreadProduct(product);</div><div class="line">            ThreadConsumer cThread = <span class="keyword">new</span> ThreadConsumer(consumer);</div><div class="line">            pThread.start();</div><div class="line">            cThread.start();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>输出结果:</p>
+<blockquote>
+<p>set的值是：148827212374628960540784817<br>get的值是：148827212374628960540784817<br>set的值是：148827212374628960540810047<br>get的值是：148827212374628960540810047</p>
+</blockquote>
+<p>可见交替地进行get/set实现多生产/多消费模式。<br><strong>注意：相比一生产一消费的模式，改动了两处。①signal()–&gt;signalAll()避免进入“假死”状态。②if()判断–&gt;while()循环，重新判断条件，避免逻辑混乱。</strong></p>
+<p>以上就是Java线程间通信的相关知识，以生产者/消费者模式为例，讲解线程间通信的使用以及注意事项。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/wechat-qcode.jpg" alt="Winner Liu wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/08/Synchronized-ReentrantLock/" rel="next" title="Synchronized/ReentrantLock">
+                <i class="fa fa-chevron-left"></i> Synchronized/ReentrantLock
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/08/volatile关键字/" rel="prev" title="volatile关键字">
+                volatile关键字 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Winner Liu" />
+            
+              <p class="site-author-name" itemprop="name">Winner Liu</p>
+              <p class="site-description motion-element" itemprop="description">燃烧吧，我的小宇宙！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、线程间通信的两种方式"><span class="nav-number">1.</span> <span class="nav-text">一、线程间通信的两种方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-wait-notify"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.wait()/notify()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#wait-方法使用注意事项"><span class="nav-number">1.0.2.</span> <span class="nav-text">wait()方法使用注意事项</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#notify-方法使用注意事项"><span class="nav-number">1.0.3.</span> <span class="nav-text">notify()方法使用注意事项</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#wait-notify-协作的两个注意事项"><span class="nav-number">1.0.4.</span> <span class="nav-text">wait()/notify()协作的两个注意事项</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Condition实现等待-通知"><span class="nav-number">2.</span> <span class="nav-text">2.Condition实现等待/通知</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、生产者-消费者模式实现"><span class="nav-number">3.</span> <span class="nav-text">二、生产者/消费者模式实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-一生产与一消费"><span class="nav-number">3.0.1.</span> <span class="nav-text">1.一生产与一消费</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-多生产与多消费"><span class="nav-number">3.0.2.</span> <span class="nav-text">2.多生产与多消费</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Winner Liu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

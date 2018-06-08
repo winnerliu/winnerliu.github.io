@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、字符与字节在Java中有输入、输出两种IO流，每种输入、输出流又分为字节流和字符流两大类。关于字节，我们在学习8大基本数据类型中都有了解，每个字节(byte)有8bit组成，每种数据类型又几个字节组成等。关于字符，我们可能知道代表一个汉字或者英文字母。
+但是字节与字符之间的关系是怎样的？
+Java采用unicode编码，2个字节来表示一个字符，这点与C语言中不同，C语言中采用ASCII，在大多">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaIO(一)">
+<meta property="og:url" content="http://yoursite.com/2018/06/08/JavaIO-一/index.html">
+<meta property="og:site_name" content="WinnerCode">
+<meta property="og:description" content="一、字符与字节在Java中有输入、输出两种IO流，每种输入、输出流又分为字节流和字符流两大类。关于字节，我们在学习8大基本数据类型中都有了解，每个字节(byte)有8bit组成，每种数据类型又几个字节组成等。关于字符，我们可能知道代表一个汉字或者英文字母。
+但是字节与字符之间的关系是怎样的？
+Java采用unicode编码，2个字节来表示一个字符，这点与C语言中不同，C语言中采用ASCII，在大多">
+<meta property="og:updated_time" content="2018-06-08T02:50:39.735Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaIO(一)">
+<meta name="twitter:description" content="一、字符与字节在Java中有输入、输出两种IO流，每种输入、输出流又分为字节流和字符流两大类。关于字节，我们在学习8大基本数据类型中都有了解，每个字节(byte)有8bit组成，每种数据类型又几个字节组成等。关于字符，我们可能知道代表一个汉字或者英文字母。
+但是字节与字符之间的关系是怎样的？
+Java采用unicode编码，2个字节来表示一个字符，这点与C语言中不同，C语言中采用ASCII，在大多">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/08/JavaIO-一/"/>
+
+
+
+
+
+  <title>JavaIO(一) | WinnerCode</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?642f81466b73ae68d2149c1678952ac8";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WinnerCode</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/JavaIO-一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Winner Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WinnerCode">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JavaIO(一)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T10:50:18+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Java基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="一、字符与字节"><a href="#一、字符与字节" class="headerlink" title="一、字符与字节"></a>一、字符与字节</h3><p>在Java中有输入、输出两种IO流，每种输入、输出流又分为字节流和字符流两大类。关于字节，我们在学习8大基本数据类型中都有了解，每个字节(byte)有8bit组成，每种数据类型又几个字节组成等。关于字符，我们可能知道代表一个汉字或者英文字母。</p>
+<p><strong>但是字节与字符之间的关系是怎样的？</strong></p>
+<p>Java采用unicode编码，2个字节来表示一个字符，这点与C语言中不同，C语言中采用ASCII，在大多数系统中，一个字符通常占1个字节，但是在0~127整数之间的字符映射，unicode向下兼容ASCII。而Java采用unicode来表示字符，一个中文或英文字符的unicode编码都占2个字节。但如果采用其他编码方式，一个字符占用的字节数则各不相同。可能有点晕，举个例子解释下。</p>
+<p>例如：Java中的String类是按照unicode进行编码的，当使用String(byte[] bytes, String encoding)构造字符串时，encoding所指的是bytes中的数据是按照那种方式编码的，而不是最后产生的String是什么编码方式，换句话说，是让系统把bytes中的数据由encoding编码方式转换成unicode编码。如果不指明，bytes的编码方式将由jdk根据操作系统决定。</p>
+<p><code>getBytes(String charsetName)</code>使用指定的编码方式将此String编码为 byte 序列，并将结果存储到一个新的 byte 数组中。如果不指定将使用操作系统默认的编码方式，我的电脑默认的是GBK编码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hel</span> </span>&#123;  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;  </div><div class="line">        String str = <span class="string">"你好hello"</span>;  </div><div class="line">            <span class="keyword">int</span> byte_len = str.getBytes().length;  </div><div class="line">            <span class="keyword">int</span> len = str.length();  </div><div class="line">            System.out.println(<span class="string">"字节长度为："</span> + byte_len);  </div><div class="line">        System.out.println(<span class="string">"字符长度为："</span> + len);  </div><div class="line">        System.out.println(<span class="string">"系统默认编码方式："</span> + System.getProperty(<span class="string">"file.encoding"</span>));  </div><div class="line">       &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出结果</p>
+<blockquote>
+<p>字节长度为：9<br>字符长度为：7<br>系统默认编码方式：GBK</p>
+</blockquote>
+<p>这是因为：在 GB 2312 编码或 GBK 编码中，一个英文字母字符存储需要1个字节，一个汉字字符存储需要2个字节。 在UTF-8编码中，一个英文字母字符存储需要1个字节，一个汉字字符储存需要3到4个字节。在UTF-16编码中，一个英文字母字符存储需要2个字节，一个汉字字符储存需要3到4个字节（Unicode扩展区的一些汉字存储需要4个字节）。在UTF-32编码中，世界上任何字符的存储都需要4个字节。</p>
+<p><strong>简单来讲，一个字符表示一个汉字或英文字母，具体字符与字节之间的大小比例视编码情况而定。有时候读取的数据是乱码，就是因为编码方式不一致，需要进行转换，然后再按照unicode进行编码。</strong></p>
+<h3 id="二、File类"><a href="#二、File类" class="headerlink" title="二、File类"></a>二、File类</h3><p>File类是java.io包下代表与平台无关的文件和目录，也就是说，如果希望在程序中操作<strong>文件和目录</strong>，都可以通过File类来完成。</p>
+<h5 id="①构造函数"><a href="#①构造函数" class="headerlink" title="①构造函数"></a>①构造函数</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//构造函数File(String pathname)</span></div><div class="line">File f1 =<span class="keyword">new</span> File(<span class="string">"c:\\abc\\1.txt"</span>);</div><div class="line"><span class="comment">//File(String parent,String child)</span></div><div class="line">File f2 =<span class="keyword">new</span> File(<span class="string">"c:\\abc"</span>,<span class="string">"2.txt"</span>);</div><div class="line"><span class="comment">//File(File parent,String child)</span></div><div class="line">File f3 =<span class="keyword">new</span> File(<span class="string">"c:"</span>+File.separator+<span class="string">"abc"</span>);<span class="comment">//separator 跨平台分隔符</span></div><div class="line">File f4 =<span class="keyword">new</span> File(f3,<span class="string">"3.txt"</span>);</div><div class="line">System.out.println(f1);<span class="comment">//c:\abc\1.txt</span></div></pre></td></tr></table></figure>
+<p><strong>路径分隔符：</strong><br>windows： “/“ “\” 都可以<br>linux/unix： “/“<br>注意:如果windows选择用”\”做分割符的话,那么请记得替换成”\“,因为Java中”\”代表转义字符<br>所以推荐都使用”/“，也可以直接使用代码<code>File.separator</code>，表示跨平台分隔符。<br><strong>路径：</strong><br>相对路径：<br>./表示当前路径<br>../表示上一级路径<br>其中当前路径：默认情况下，java.io 包中的类总是根据当前用户目录来分析相对路径名。此目录由系统属性 user.dir 指定，通常是 Java 虚拟机的调用目录。”</p>
+<p>绝对路径：<br>绝对路径名是完整的路径名，不需要任何其他信息就可以定位自身表示的文件</p>
+<h5 id="②创建与删除方法"><a href="#②创建与删除方法" class="headerlink" title="②创建与删除方法"></a>②创建与删除方法</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//如果文件存在返回false，否则返回true并且创建文件 </span></div><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">createNewFile</span><span class="params">()</span></span>;</div><div class="line"><span class="comment">//创建一个File对象所对应的目录，成功返回true，否则false。且File对象必须为路径而不是文件。只会创建最后一级目录，如果上级目录不存在就抛异常。</span></div><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">mkdir</span><span class="params">()</span></span>;</div><div class="line"><span class="comment">//创建一个File对象所对应的目录，成功返回true，否则false。且File对象必须为路径而不是文件。创建多级目录，创建路径中所有不存在的目录</span></div><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">mkdirs</span><span class="params">()</span>    </span>;</div><div class="line"><span class="comment">//如果文件存在返回true并且删除文件，否则返回false</span></div><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">delete</span><span class="params">()</span></span>;</div><div class="line"><span class="comment">//在虚拟机终止时，删除File对象所表示的文件或目录。</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">deleteOnExit</span><span class="params">()</span></span>;</div></pre></td></tr></table></figure>
+<h5 id="③判断方法"><a href="#③判断方法" class="headerlink" title="③判断方法"></a>③判断方法</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">canExecute</span><span class="params">()</span>    </span>;<span class="comment">//判断文件是否可执行</span></div><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">canRead</span><span class="params">()</span></span>;<span class="comment">//判断文件是否可读</span></div><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">canWrite</span><span class="params">()</span></span>;<span class="comment">//判断文件是否可写</span></div><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">exists</span><span class="params">()</span></span>;<span class="comment">//判断文件是否存在</span></div><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isDirectory</span><span class="params">()</span></span>;<span class="comment">//判断是否是目录</span></div><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isFile</span><span class="params">()</span></span>;<span class="comment">//判断是否是文件</span></div><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isHidden</span><span class="params">()</span></span>;<span class="comment">//判断是否是隐藏文件或隐藏目录</span></div><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isAbsolute</span><span class="params">()</span></span>;<span class="comment">//判断是否是绝对路径 文件不存在也能判断</span></div></pre></td></tr></table></figure>
+<h5 id="③获取方法"><a href="#③获取方法" class="headerlink" title="③获取方法"></a>③获取方法</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function">String <span class="title">getName</span><span class="params">()</span></span>;<span class="comment">//返回文件或者是目录的名称</span></div><div class="line"><span class="function">String <span class="title">getPath</span><span class="params">()</span></span>;<span class="comment">//返回路径</span></div><div class="line"><span class="function">String <span class="title">getAbsolutePath</span><span class="params">()</span></span>;<span class="comment">//返回绝对路径</span></div><div class="line"><span class="function">String <span class="title">getParent</span><span class="params">()</span></span>;<span class="comment">//返回父目录，如果没有父目录则返回null</span></div><div class="line"><span class="function"><span class="keyword">long</span> <span class="title">lastModified</span><span class="params">()</span></span>;<span class="comment">//返回最后一次修改的时间</span></div><div class="line"><span class="function"><span class="keyword">long</span> <span class="title">length</span><span class="params">()</span></span>;<span class="comment">//返回文件的长度</span></div><div class="line">File[] listRoots();<span class="comment">// 列出所有的根目录（Window中就是所有系统的盘符）</span></div><div class="line">String[] list() ;<span class="comment">//返回一个字符串数组，给定路径下的文件或目录名称字符串</span></div><div class="line">String[] list(FilenameFilter filter);<span class="comment">//返回满足过滤器要求的一个字符串数组</span></div><div class="line">File[]  listFiles();<span class="comment">//返回一个文件对象数组，给定路径下文件或目录</span></div><div class="line">File[] listFiles(FilenameFilter filter);<span class="comment">//返回满足过滤器要求的一个文件对象数组</span></div></pre></td></tr></table></figure>
+<p>其中包含了一个重要的接口FileNameFilter，该接口是个文件过滤器，包含了一个<code>accept(File dir,String name)</code>方法，该方法依次对指定File的所有子目录或者文件进行迭代，按照指定条件，进行过滤，过滤出满足条件的所有文件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 文件过滤</span></div><div class="line">File[] files = file.listFiles(<span class="keyword">new</span> FilenameFilter() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">accept</span><span class="params">(File file, String filename)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> filename.endsWith(<span class="string">".mp3"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>file目录下的所有子文件如果满足后缀是.mp3的条件的文件都会被过滤出来。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/wechat-qcode.jpg" alt="Winner Liu wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/08/Java注解/" rel="next" title="Java注解">
+                <i class="fa fa-chevron-left"></i> Java注解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/08/JavaIO-二/" rel="prev" title="JavaIO(二)">
+                JavaIO(二) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Winner Liu" />
+            
+              <p class="site-author-name" itemprop="name">Winner Liu</p>
+              <p class="site-description motion-element" itemprop="description">燃烧吧，我的小宇宙！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、字符与字节"><span class="nav-number">1.</span> <span class="nav-text">一、字符与字节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、File类"><span class="nav-number">2.</span> <span class="nav-text">二、File类</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#①构造函数"><span class="nav-number">2.0.1.</span> <span class="nav-text">①构造函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#②创建与删除方法"><span class="nav-number">2.0.2.</span> <span class="nav-text">②创建与删除方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#③判断方法"><span class="nav-number">2.0.3.</span> <span class="nav-text">③判断方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#③获取方法"><span class="nav-number">2.0.4.</span> <span class="nav-text">③获取方法</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Winner Liu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

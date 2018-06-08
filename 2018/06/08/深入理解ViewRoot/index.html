@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,ViewRoot,读书笔记," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="深入理解控件(ViewRoot)系统
+
+WindowManager的结构体系:
+
+
+ViewManager接口：WindowManager体系中最基本的接口。WindowManager继承自这个接口说明了WindowManager与ViewGroup本质上的一致性。
+
+WindowManager接口：WindowManager接口继承自ViewManager接口的同时，根据窗口的一些特殊性增加了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解ViewRoot">
+<meta property="og:url" content="http://yoursite.com/2018/06/08/深入理解ViewRoot/index.html">
+<meta property="og:site_name" content="WinnerCode">
+<meta property="og:description" content="深入理解控件(ViewRoot)系统
+
+WindowManager的结构体系:
+
+
+ViewManager接口：WindowManager体系中最基本的接口。WindowManager继承自这个接口说明了WindowManager与ViewGroup本质上的一致性。
+
+WindowManager接口：WindowManager接口继承自ViewManager接口的同时，根据窗口的一些特殊性增加了">
+<meta property="og:image" content="http://img.blog.csdn.net/20150814133444496?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="http://img.blog.csdn.net/20150814133520258?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:updated_time" content="2018-06-08T02:18:37.797Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解ViewRoot">
+<meta name="twitter:description" content="深入理解控件(ViewRoot)系统
+
+WindowManager的结构体系:
+
+
+ViewManager接口：WindowManager体系中最基本的接口。WindowManager继承自这个接口说明了WindowManager与ViewGroup本质上的一致性。
+
+WindowManager接口：WindowManager接口继承自ViewManager接口的同时，根据窗口的一些特殊性增加了">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20150814133444496?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/08/深入理解ViewRoot/"/>
+
+
+
+
+
+  <title>深入理解ViewRoot | WinnerCode</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?642f81466b73ae68d2149c1678952ac8";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WinnerCode</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/深入理解ViewRoot/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Winner Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WinnerCode">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深入理解ViewRoot</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T10:18:11+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android高级/" itemprop="url" rel="index">
+                    <span itemprop="name">Android高级</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <ul>
+<li><a href="http://blog.csdn.net/innost/article/details/47660471" target="_blank" rel="external">深入理解控件(ViewRoot)系统</a></li>
+</ul>
+<p>WindowManager的结构体系:</p>
+<p><img src="http://img.blog.csdn.net/20150814133444496?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
+<ul>
+<li><p>ViewManager接口：WindowManager体系中最基本的接口。WindowManager继承自这个接口说明了WindowManager与ViewGroup本质上的一致性。</p>
+</li>
+<li><p>WindowManager接口：WindowManager接口继承自ViewManager接口的同时，根据窗口的一些特殊性增加了两个新的接口。getDefaultDisplay()用以得知这个WindowManager的实例会将窗口添加到哪个屏幕上去。而removeViewImmediate()则要求WindowManager必须在这个调用返回之前完成所有的销毁工作。</p>
+</li>
+<li><p>WindowManagerImpl类：WindowManager接口的实现者。它自身没有什么实际的逻辑，WindowManager所定义的接口都是交由WindowManagerGlobal完成的。但是它保存了两个重要的只读成员，它们分别指明了通过这个WindowManagerImpl实例所管理的窗口将被显示在哪个屏幕上，以及将会作为哪个窗口的子窗口。因此在一个进程中，WindowManagerImpl的实例可能有多个。</p>
+</li>
+<li><p>WindowManagerGlobal类：它没有继承上述任何一个接口，但它是WindowManager的最终实现者。它维护了当前进程中所有已经添加到系统中的窗口的信息。另外，在一个进程中仅有一个WindowManagerGlobal的实例。</p>
+</li>
+</ul>
+<p>在理清了WindowManager的结构体系后，便可以探讨WindowManager是如何完成窗口管理的。其管理方式体现在其对ViewManager的三个接口的实现上。为了简洁起见，我们将直接分析WindowManagerGlobal中的实现。</p>
+<p>添加窗口的代码并不复杂。其中的关键点有：</p>
+<ul>
+<li><p>父窗口修改新窗口的布局参数。可能修改的只有LayoutParams.token和LayoutParams.mTitle两个属性。mTitle属性不必赘述，仅用于调试。而token属性则值得一提。回顾一下第4章的内容，每一个新窗口必须通过LayoutParams.token向WMS出示相应的令牌才可以。在addView()函数中通过父窗口修改这个token属性的目的是为了减少开发者的负担。开发者不需要关心token到底应该被设置为什么值，只需将LayoutParams丢给一个WindowManager，剩下的事情就不用再关心了。<br>父窗口修改token属性的原则是：如果新窗口的类型为子窗口(其类型大于等于LayoutParams.FIRST_SUB_WINDOW并小于等于LayoutParams.LAST_SUB_WINDOW)，则LayoutParams.token所持有的令牌为其父窗口的ID（也就是IWindow.asBinder()的返回值）。否则LayoutParams.token将被修改为父窗口所属的Activity的ID(也就是在第4章中所介绍的AppToken)，这对类型为TYPE_APPLICATION的新窗口来说非常重要。<br>从这点来说，当且仅当新窗的类型为子窗口时addView()的parentWindow参数才是真正意义上的父窗口。这类子窗口有上下文菜单、弹出式菜单以及游标等等，在WMS中，这些窗口对应的WindowState所保存的mAttachedWindow既是parentWindow所对应的WindowState。然而另外还有一些窗口，如对话框窗口，类型为TYPE_APPLICATION， 并不属于子窗口，但需要AppToken作为其令牌，为此parentWindow将自己的AppToken赋予了新窗口的的LayoutParams.token中。此时parentWindow便并不是严格意义上的父窗口了。</p>
+</li>
+<li><p>为新窗口创建一个ViewRootImpl对象。顾名思义，ViewRootImpl实现了一个控件树的根。它负责与WMS进行直接的通讯，负责管理Surface，负责触发控件的测量与布局，负责触发控件的绘制，同时也是输入事件的中转站。总之，ViewRootImpl是整个控件系统正常运转的动力所在，无疑是本章最关键的一个组件。</p>
+</li>
+<li><p>将控件、布局参数以及新建的ViewRootImpl以相同的索引值添加到三个对应的数组mViews、mParams以及mRoots中，以供之后的查询之需。控件、布局参数以及ViewRootImpl三者共同组成了客户端的一个窗口。或者说，在控件系统中的窗口就是控件、布局参数与ViewRootImpl对象的一个三元组。</p>
+</li>
+</ul>
+<p>注意 笔者并不认同将这个三元组分别存储在三个数组中的设计。如果创建一个WindowRecord类来统一保存这个三元组将可以省去很多麻烦。</p>
+<p>另外，mViews、mParams以及mRoots这三个数组的容量是随着当前进程中的窗口数量的变化而变化的。因此在addView()以及随后的removeView()中都伴随着数组的新建、拷贝等操作。鉴于一个进程所添加的窗口数量不会太多，而且也不会很频繁，所以这些时间开销是可以接受的。不过笔者仍然认为相对于数组，ArrayList或CopyOnWriteArrayList是更好的选择。</p>
+<ul>
+<li>调用ViewRootImpl.setView()函数，将控件交给ViewRootImpl进行托管。这个动作将使得ViewRootImpl向WMS添加窗口、获取Surface以及重绘等一系列的操作。这一步是控件能够作为一个窗口显示在屏幕上的根本原因！</li>
+</ul>
+<p>总体来说，WindowManagerGlobal在通过父窗口调整了布局参数之后，将新建的ViewRootImpl、控件以及布局参数保存在自己的三个数组中，然后将控件交由新建的ViewRootImpl进行托管，从而完成了窗口的添加。WindowManagerGlobal管理窗口的原理如图所示。</p>
+<p> WindowManagerGlobal的窗口管理:</p>
+<p><img src="http://img.blog.csdn.net/20150814133520258?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
+<h5 id="WindowManager的总结"><a href="#WindowManager的总结" class="headerlink" title="WindowManager的总结"></a>WindowManager的总结</h5><p>经过前文的分析，相信读者对WindowManager的工作原理有了深入的认识。</p>
+<ul>
+<li><p>鉴于窗口布局和控件布局的一致性，WindowManager继承并实现了接口ViewManager。</p>
+</li>
+<li><p>使用者可以通过Context.getSystemService(Context.WINDOW_SERVICE)来获取一个WindowManager的实例。这个实例的真实类型是WindowManagerImpl。WindowManagerImpl一旦被创建就确定了通过它所创建的窗口所属哪块屏幕？哪个父窗口？</p>
+</li>
+<li><p>WindowManagerImpl除了保存了窗口所属的屏幕以及父窗口以外，没有任何实质性的工作。窗口的管理都交由WindowManagerGlobal的实例完成。</p>
+</li>
+<li><p>WindowManagerGlobal在一个进程中只有一个实例。</p>
+</li>
+<li><p>WindowManagerGlobal在3个数组中统一管理整个进程中的所有窗口的信息。这些信息包括控件、布局参数以及ViewRootImpl三个元素。</p>
+</li>
+<li><p>除了管理窗口的上述3个元素以外，WindowManagerGlobal将窗口的创建、销毁与布局更新等任务交付给了ViewRootImpl完成。</p>
+</li>
+</ul>
+<p>说明 在实际的应用开发过程中，有时会在logcat的输出中遇到有关WindowLeaked的异常输出。WindowLeaked异常发生与WindowManagerGlobal中，其原因是Activity在destroy之前没有销毁其附属窗口，如对话框、弹出菜单等。</p>
+<p>如此看来，WindowManager的实现仍然是很轻量的。窗口的创建、销毁与布局更新都指向了一个组件：ViewRootImpl。</p>
+<p><strong>深入理解ViewRootImpl</strong></p>
+<p>ViewRootImpl实现了ViewParent接口，作为整个控件树的根部，它是控件树正常运作的动力所在，控件的测量、布局、绘制以及输入事件的派发处理都由ViewRootImpl触发。另一方面，它是WindowManagerGlobal工作的实际实现者，因此它还需要负责与WMS交互通信以调整窗口的位置大小，以及对来自WMS的事件（如窗口尺寸改变等）作出相应的处理。</p>
+<p><strong>performTraversals()的工作阶段</strong></p>
+<p>performTraversals()是Android 源码中最庞大的方法之一，因此在正式探讨它的实现之前最好先将其划分为以下几个工作阶段作为指导。</p>
+<ul>
+<li><p>预测量阶段。这是进入performTraversals()方法后的第一个阶段，它会对控件树进行第一次测量。测量结果可以通过mView. getMeasuredWidth()/Height()获得。在此阶段中将会计算出控件树为显示其内容所需的尺寸，即期望的窗口尺寸。在这个阶段中，View及其子类的onMeasure()方法将会沿着控件树依次得到回调。</p>
+</li>
+<li><p>布局窗口阶段。根据预测量的结果，通过IWindowSession.relayout()方法向WMS请求调整窗口的尺寸等属性，这将引发WMS对窗口进行重新布局，并将布局结果返回给ViewRootImpl。</p>
+</li>
+<li><p>最终测量阶段。预测量的结果是控件树所期望的窗口尺寸。然而由于在WMS中影响窗口布局的因素很多(参考第4章)，WMS不一定会将窗口准确地布局为控件树所要求的尺寸，而迫于WMS作为系统服务的强势地位，控件树不得不接受WMS的布局结果。因此在这一阶段，performTraversals()将以窗口的实际尺寸对控件进行最终测量。在这个阶段中，View及其子类的onMeasure()方法将会沿着控件树依次被回调。</p>
+</li>
+<li><p>布局控件树阶段。完成最终测量之后便可以对控件树进行布局了。测量确定的是控件的尺寸，而布局则是确定控件的位置。在这个阶段中，View及其子类的onLayout()方法将会被回调。</p>
+</li>
+<li><p>绘制阶段。这是performTraversals()的最终阶段。确定了控件的位置与尺寸后，便可以对控件树进行绘制了。在这个阶段中，View及其子类的onDraw()方法将会被回调。</p>
+</li>
+</ul>
+<p>说明 很多文章都倾向于将performTraversals()的工作划分为测量、布局与绘制三个阶段。然而笔者认为如此划分隐藏了WMS在这个过程中的地位，并且没能体现出控件树对窗口尺寸的期望、WMS对窗口尺寸做最终的确定，最后以WMS给出的结果为准再次进行测量的协商过程。而这个协商过程充分体现了ViewRootImpl作为WMS与控件树的中间人的角色。</p>
+<ul>
+<li><p>MeasureSpec.UNSPECIFIED (0)：表示控件在进行测量时，可以无视SPEC_SIZE的值。控件可以是它所期望的任意尺寸。</p>
+</li>
+<li><p>MeasureSpec.EXACTLY (1)：表示子控件必须为SPEC_SIZE所制定的尺寸。当控件的LayoutParams.width/height为一确定值，或者是MATCH_PARENT时，对应的MeasureSpec参数会使用这个SPEC_MODE。</p>
+</li>
+<li><p>MeasureSpec.AT_MOST (2)：表示子控件可以是它所期望的尺寸，但是不得大于SPEC_SIZE。当控件的LayoutParams.width/height为WRAP_CONTENT时，对应的MeasureSpec参数会使用这个SPEC_MODE。</p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/wechat-qcode.jpg" alt="Winner Liu wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/ViewRoot/" rel="tag"># ViewRoot</a>
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/08/深入理解WMS-WindowManagerService/" rel="next" title="深入理解WMS-WindowManagerService">
+                <i class="fa fa-chevron-left"></i> 深入理解WMS-WindowManagerService
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/08/深入理解PKMS-PackageManagerService/" rel="prev" title="深入理解PMS-PackageManagerService">
+                深入理解PMS-PackageManagerService <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Winner Liu" />
+            
+              <p class="site-author-name" itemprop="name">Winner Liu</p>
+              <p class="site-description motion-element" itemprop="description">燃烧吧，我的小宇宙！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#WindowManager的总结"><span class="nav-number">1.</span> <span class="nav-text">WindowManager的总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Winner Liu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

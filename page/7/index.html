@@ -230,9 +230,43 @@
       
 
       
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
     </ul>
   
 
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
   
 </nav>
 
@@ -261,7 +295,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/07/HandlerThread详解/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/JavaIO-二/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -280,7 +314,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/07/HandlerThread详解/" itemprop="url">HandlerThread详解</a></h1>
+                <a class="post-title-link" href="/2018/06/08/JavaIO-二/" itemprop="url">JavaIO(二)</a></h1>
         
 
         <div class="post-meta">
@@ -292,8 +326,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-07T22:30:16+08:00">
-                2018-06-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T10:50:58+08:00">
+                2018-06-08
               </time>
             
 
@@ -315,8 +349,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android基础/" itemprop="url" rel="index">
-                    <span itemprop="name">Android基础</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/Java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Java基础</span>
                   </a>
                 </span>
 
@@ -354,11 +399,11 @@
       
         
           
-          我们知道在Android系统中，我们执行完耗时操作都要另外开启子线程来执行，执行完线程以后线程会自动销毁。想象一下如果我们在项目中经常要执行耗时操作，如果经常要开启线程，接着又销毁线程，这无疑是很消耗
+          一、IO流的概念Java的IO流是实现输入/输出的基础，它可以方便地实现数据的输入/输出操作，在Java中把不同的输入/输出源抽象表述为”流”。流是一组有顺序的，有起点和终点的字节集合，是对数据传输的
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/07/HandlerThread详解/#more" rel="contents">
+            <a class="btn" href="/2018/06/08/JavaIO-二/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -409,7 +454,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/07/Android事件分发机制/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/JavaIO-一/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -428,7 +473,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/07/Android事件分发机制/" itemprop="url">Android事件分发机制</a></h1>
+                <a class="post-title-link" href="/2018/06/08/JavaIO-一/" itemprop="url">JavaIO(一)</a></h1>
         
 
         <div class="post-meta">
@@ -440,8 +485,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-07T22:28:50+08:00">
-                2018-06-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T10:50:18+08:00">
+                2018-06-08
               </time>
             
 
@@ -463,8 +508,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android基础/" itemprop="url" rel="index">
-                    <span itemprop="name">Android基础</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/Java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Java基础</span>
                   </a>
                 </span>
 
@@ -502,15 +558,11 @@
       
         
           
-          一、 基础认知1.1 事件分发的对象是谁？答：事件
-
-当用户触摸屏幕时（View或ViewGroup派生的控件），将产生点击事件（Touch事件）。
-
-Touch事件相关细节（发生触摸的位置、时间、历
+          一、字符与字节在Java中有输入、输出两种IO流，每种输入、输出流又分为字节流和字符流两大类。关于字节，我们在学习8大基本数据类型中都有了解，每个字节(byte)有8bit组成，每种数据类型又几个字节
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/07/Android事件分发机制/#more" rel="contents">
+            <a class="btn" href="/2018/06/08/JavaIO-一/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -561,7 +613,7 @@ Touch事件相关细节（发生触摸的位置、时间、历
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/07/Android消息机制/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Java注解/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -580,7 +632,7 @@ Touch事件相关细节（发生触摸的位置、时间、历
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/07/Android消息机制/" itemprop="url">Android消息机制</a></h1>
+                <a class="post-title-link" href="/2018/06/08/Java注解/" itemprop="url">Java注解</a></h1>
         
 
         <div class="post-meta">
@@ -592,8 +644,8 @@ Touch事件相关细节（发生触摸的位置、时间、历
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-07T22:26:51+08:00">
-                2018-06-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T10:49:04+08:00">
+                2018-06-08
               </time>
             
 
@@ -615,8 +667,19 @@ Touch事件相关细节（发生触摸的位置、时间、历
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android基础/" itemprop="url" rel="index">
-                    <span itemprop="name">Android基础</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/Java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Java基础</span>
                   </a>
                 </span>
 
@@ -654,11 +717,12 @@ Touch事件相关细节（发生触摸的位置、时间、历
       
         
           
-          一、消息机制概述1.消息机制的简介在Android中使用消息机制，我们首先想到的就是Handler。没错，Handler是Android消息机制的上层接口。Handler的使用过程很简单，通过它可以轻
+          一、元数据要想理解注解（Annotation）的作用，就要先理解Java中元数据的概念。
+1.元数据概念元数据是关于数据的数据。在编程语言上下文中，元数据是添加到程序元素如方法、字段、类和包上的额外信
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/07/Android消息机制/#more" rel="contents">
+            <a class="btn" href="/2018/06/08/Java注解/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -709,7 +773,7 @@ Touch事件相关细节（发生触摸的位置、时间、历
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/07/Fragment详解/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Java反射三/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -728,7 +792,7 @@ Touch事件相关细节（发生触摸的位置、时间、历
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/07/Fragment详解/" itemprop="url">Fragment详解</a></h1>
+                <a class="post-title-link" href="/2018/06/08/Java反射三/" itemprop="url">Java反射三</a></h1>
         
 
         <div class="post-meta">
@@ -740,8 +804,8 @@ Touch事件相关细节（发生触摸的位置、时间、历
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-07T22:25:18+08:00">
-                2018-06-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T10:48:06+08:00">
+                2018-06-08
               </time>
             
 
@@ -763,8 +827,19 @@ Touch事件相关细节（发生触摸的位置、时间、历
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android基础/" itemprop="url" rel="index">
-                    <span itemprop="name">Android基础</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/Java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Java基础</span>
                   </a>
                 </span>
 
@@ -802,17 +877,11 @@ Touch事件相关细节（发生触摸的位置、时间、历
       
         
           
-          一、目录
-什么是Fragment
-Fragment的生命周期
-Fragment的使用方式
-什么是Fragment的回退栈？【重要】
-Fragment与Activity之间的通信【难点】
-Fragmen
+          一、泛型和Class类从JDK 1.5 后，Java中引入泛型机制，Class类也增加了泛型功能，从而允许使用泛型来限制Class类，例如：String.class的类型实际上是Class&lt;St
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/07/Fragment详解/#more" rel="contents">
+            <a class="btn" href="/2018/06/08/Java反射三/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -863,7 +932,7 @@ Fragmen
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/07/ContentProvider的使用与了解/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Java反射二/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -882,7 +951,7 @@ Fragmen
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/07/ContentProvider的使用与了解/" itemprop="url">ContentProvider的使用与了解</a></h1>
+                <a class="post-title-link" href="/2018/06/08/Java反射二/" itemprop="url">Java反射二</a></h1>
         
 
         <div class="post-meta">
@@ -894,8 +963,8 @@ Fragmen
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-07T22:23:49+08:00">
-                2018-06-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T10:47:36+08:00">
+                2018-06-08
               </time>
             
 
@@ -917,8 +986,19 @@ Fragmen
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android基础/" itemprop="url" rel="index">
-                    <span itemprop="name">Android基础</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/Java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Java基础</span>
                   </a>
                 </span>
 
@@ -956,14 +1036,12 @@ Fragmen
       
         
           
-          一、定义ContentProvider，即内容提供者属于Android的四大组件之一。
-二、 作用进程间 进行数据交互 &amp; 共享，即跨进程通信
-
-三、 原理ContentProvider的底层
+          一、代理模式定义：给某个对象提供一个代理对象，并由代理对象控制对于原对象的访问，即客户不直接操控原对象，而是通过代理对象间接地操控原对象。
+1、代理模式的理解代理模式使用代理对象完成用户请求，屏蔽用户
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/07/ContentProvider的使用与了解/#more" rel="contents">
+            <a class="btn" href="/2018/06/08/Java反射二/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1014,7 +1092,7 @@ Fragmen
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/07/BroadcastReceiver的使用与了解/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Java反射一/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -1033,7 +1111,7 @@ Fragmen
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/07/BroadcastReceiver的使用与了解/" itemprop="url">BroadcastReceiver的使用与了解</a></h1>
+                <a class="post-title-link" href="/2018/06/08/Java反射一/" itemprop="url">Java反射一</a></h1>
         
 
         <div class="post-meta">
@@ -1045,8 +1123,8 @@ Fragmen
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-07T22:22:04+08:00">
-                2018-06-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T10:47:00+08:00">
+                2018-06-08
               </time>
             
 
@@ -1068,8 +1146,19 @@ Fragmen
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android基础/" itemprop="url" rel="index">
-                    <span itemprop="name">Android基础</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/Java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Java基础</span>
                   </a>
                 </span>
 
@@ -1107,13 +1196,12 @@ Fragmen
       
         
           
-          一、 定义
-BroadcastReceiver（广播接收器），属于Android四大组件之一
-在Android开发中，BroadcastReceiver的应用场景非常多广播，是一个全局的监听器，属于A
+          一、概述Java反射机制定义
+Java反射机制是在运行状态中，对于任意一个类，都能够知道这个类中的所有属性和方法；对于任意一个对象，都能够调用它的任意一个方法和属性；这种动态获取的信息以及动态调用对象
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/07/BroadcastReceiver的使用与了解/#more" rel="contents">
+            <a class="btn" href="/2018/06/08/Java反射一/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1164,7 +1252,7 @@ BroadcastReceiver（广播接收器），属于Android四大组件之一
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/07/Service的使用与了解/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Java泛型/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -1183,7 +1271,7 @@ BroadcastReceiver（广播接收器），属于Android四大组件之一
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/07/Service的使用与了解/" itemprop="url">Service的使用与了解</a></h1>
+                <a class="post-title-link" href="/2018/06/08/Java泛型/" itemprop="url">JaJava泛型</a></h1>
         
 
         <div class="post-meta">
@@ -1195,8 +1283,8 @@ BroadcastReceiver（广播接收器），属于Android四大组件之一
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-07T22:18:22+08:00">
-                2018-06-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T10:46:15+08:00">
+                2018-06-08
               </time>
             
 
@@ -1218,8 +1306,19 @@ BroadcastReceiver（广播接收器），属于Android四大组件之一
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android基础/" itemprop="url" rel="index">
-                    <span itemprop="name">Android基础</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/Java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Java基础</span>
                   </a>
                 </span>
 
@@ -1257,12 +1356,13 @@ BroadcastReceiver（广播接收器），属于Android四大组件之一
       
         
           
-          一、Service简介Service是Android程序中四大基础组件之一，它和Activity一样都是Context的子类，只不过它没有UI界面，是在后台运行的组件。
-Service是Android
+          一、泛型简介1.引入泛型的目的了解引入泛型的动机，就先从语法糖开始了解。
+语法糖
+语法糖（Syntactic Sugar），也称糖衣语法，是由英国计算机学家Peter.J.Landin发明的一个术语，
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/07/Service的使用与了解/#more" rel="contents">
+            <a class="btn" href="/2018/06/08/Java泛型/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1313,7 +1413,7 @@ Service是Android
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/07/Activity的使用与了解/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Java集合——LinkedHashMap/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -1332,7 +1432,7 @@ Service是Android
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/07/Activity的使用与了解/" itemprop="url">Activity的使用与了解</a></h1>
+                <a class="post-title-link" href="/2018/06/08/Java集合——LinkedHashMap/" itemprop="url">JaJava集合——LinkedHashMap</a></h1>
         
 
         <div class="post-meta">
@@ -1344,8 +1444,8 @@ Service是Android
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-07T22:05:59+08:00">
-                2018-06-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T10:45:21+08:00">
+                2018-06-08
               </time>
             
 
@@ -1367,8 +1467,19 @@ Service是Android
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android基础/" itemprop="url" rel="index">
-                    <span itemprop="name">Android基础</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/Java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Java基础</span>
                   </a>
                 </span>
 
@@ -1406,11 +1517,12 @@ Service是Android
       
         
           
-          一、Activity的生命周期本节内容将生命周期的情况分为两部分介绍，第一部分先了解典型的生命周期的7个部分及Activity的状态。第二部分会介绍Activity在一些特殊情况下的生命周期的经历过程
+          一、 概述在理解了HashMap后，我们来学习LinkedHashMap的工作原理及实现。首先还是类似的，我们写一个简单的LinkedHashMap的程序：
+123456789101112Linked
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/07/Activity的使用与了解/#more" rel="contents">
+            <a class="btn" href="/2018/06/08/Java集合——LinkedHashMap/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1461,7 +1573,7 @@ Service是Android
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/24/关于网易的一次面试经历/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Java集合——TreeMap/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -1480,7 +1592,7 @@ Service是Android
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/24/关于网易的一次面试经历/" itemprop="url">关于网易的一次面试经历</a></h1>
+                <a class="post-title-link" href="/2018/06/08/Java集合——TreeMap/" itemprop="url">JaJava集合——TreeMap</a></h1>
         
 
         <div class="post-meta">
@@ -1492,8 +1604,8 @@ Service是Android
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-24T14:36:25+08:00">
-                2018-05-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T10:44:31+08:00">
+                2018-06-08
               </time>
             
 
@@ -1515,8 +1627,19 @@ Service是Android
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/面试经历/" itemprop="url" rel="index">
-                    <span itemprop="name">面试经历</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/Java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Java基础</span>
                   </a>
                 </span>
 
@@ -1554,11 +1677,12 @@ Service是Android
       
         
           
-          面试经历：1、动画的区别；2、rn实现动画的原理；3、rn的原理机制；4、view事件触发；5、自定义view的onMesure, onLayout, onDraw过程;6、第三方库的原理；7、rec
+          一、概述 {1-_概述}
+A Red-Black tree based NavigableMap implementation. The map is sorted according to the 
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/05/24/关于网易的一次面试经历/#more" rel="contents">
+            <a class="btn" href="/2018/06/08/Java集合——TreeMap/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1609,7 +1733,7 @@ Service是Android
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/24/解析Dagger2/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Java集合——HashMap/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -1628,7 +1752,7 @@ Service是Android
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/24/解析Dagger2/" itemprop="url">解析Dagger2</a></h1>
+                <a class="post-title-link" href="/2018/06/08/Java集合——HashMap/" itemprop="url">JaJava集合——HashMap</a></h1>
         
 
         <div class="post-meta">
@@ -1640,8 +1764,8 @@ Service是Android
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-24T14:35:14+08:00">
-                2018-05-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T10:43:37+08:00">
+                2018-06-08
               </time>
             
 
@@ -1663,8 +1787,19 @@ Service是Android
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/开源库/" itemprop="url" rel="index">
-                    <span itemprop="name">开源库</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/Java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Java基础</span>
                   </a>
                 </span>
 
@@ -1702,12 +1837,16 @@ Service是Android
       
         
           
-          http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2018/0102/9047.html
-关于Dagger2什么是依赖注入主要用来解决什么问题
+          一、概述从本文你可以学习到：
+
+
+什么时候会使用HashMap？他有什么特点？
+你知道HashMap的工作原理吗？
+你知道get和put的原理吗？equals()和hashCode()的都有什么作用？
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/05/24/解析Dagger2/#more" rel="contents">
+            <a class="btn" href="/2018/06/08/Java集合——HashMap/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1749,7 +1888,7 @@ Service是Android
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1799,7 +1938,7 @@ Service是Android
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-count">113</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1810,7 +1949,7 @@ Service是Android
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1821,7 +1960,7 @@ Service是Android
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">71</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -2026,6 +2165,323 @@ Service是Android
 
 
   
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
 
 
 

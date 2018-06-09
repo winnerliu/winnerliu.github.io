@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="树," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、并查集的介绍 并查集（Union/Find）从名字可以看出，主要涉及两种基本操作:合并和查找。这说明，初始时并查集中的元素是不相交的，经过一系列的基本操作(Union)，最终合并成一个大的集合。
+而在某次合并之后，有一种合理的需求：某两个元素是否已经处在同一个集合中了？因此就需要Find操作。
+并查集是一种 不相交集合 的数据结构，设有一个动态集合S={s1，s2，s3，…..sn}，每个集合">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并查集">
+<meta property="og:url" content="http://yoursite.com/2018/06/09/并查集/index.html">
+<meta property="og:site_name" content="WinnerCode">
+<meta property="og:description" content="一、并查集的介绍 并查集（Union/Find）从名字可以看出，主要涉及两种基本操作:合并和查找。这说明，初始时并查集中的元素是不相交的，经过一系列的基本操作(Union)，最终合并成一个大的集合。
+而在某次合并之后，有一种合理的需求：某两个元素是否已经处在同一个集合中了？因此就需要Find操作。
+并查集是一种 不相交集合 的数据结构，设有一个动态集合S={s1，s2，s3，…..sn}，每个集合">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/715283/201605/715283-20160512092946874-1968107559.jpg">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/715283/201605/715283-20160512093206499-946248423.jpg">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/715283/201609/715283-20160917221552352-697575435.png">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/715283/201609/715283-20160917221621664-276304966.png">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/715283/201609/715283-20160917221645695-1653305001.png">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/715283/201609/715283-20160917221709180-221103150.png">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/715283/201609/715283-20160917221738289-52951535.png">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/715283/201609/715283-20160917221800680-1425522009.png">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/715283/201609/715283-20160917221820586-1276085996.png">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/715283/201609/715283-20160917221844055-1168870298.png">
+<meta property="og:updated_time" content="2018-06-09T10:39:49.190Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="并查集">
+<meta name="twitter:description" content="一、并查集的介绍 并查集（Union/Find）从名字可以看出，主要涉及两种基本操作:合并和查找。这说明，初始时并查集中的元素是不相交的，经过一系列的基本操作(Union)，最终合并成一个大的集合。
+而在某次合并之后，有一种合理的需求：某两个元素是否已经处在同一个集合中了？因此就需要Find操作。
+并查集是一种 不相交集合 的数据结构，设有一个动态集合S={s1，s2，s3，…..sn}，每个集合">
+<meta name="twitter:image" content="http://images2015.cnblogs.com/blog/715283/201605/715283-20160512092946874-1968107559.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/09/并查集/"/>
+
+
+
+
+
+  <title>并查集 | WinnerCode</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?642f81466b73ae68d2149c1678952ac8";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WinnerCode</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/09/并查集/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Winner Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WinnerCode">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">并查集</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-09T17:00:48+08:00">
+                2018-06-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="一、并查集的介绍"><a href="#一、并查集的介绍" class="headerlink" title="一、并查集的介绍"></a>一、并查集的介绍</h2><p> 并查集（Union/Find）从名字可以看出，主要涉及两种基本操作:合并和查找。这说明，初始时并查集中的元素是不相交的，经过一系列的基本操作(Union)，最终合并成一个大的集合。</p>
+<p>而在某次合并之后，有一种合理的需求：某两个元素是否已经处在同一个集合中了？因此就需要Find操作。</p>
+<p>并查集是一种 不相交集合 的数据结构，设有一个<strong>动态集合</strong>S={s1，s2，s3，…..sn}，每个集合通过一个代表来标识，该代表中集合中的某个元素。</p>
+<p>比如，若某个元素 x 是否在集合 s1 中(Find操作)，返回集合 s1 的代表元素即可。这样，判断两个元素是否在同一个集合中也是很方便的，只要看find(x) 和 find(y) 是否返回同一个代表即可。</p>
+<p>为什么是动态集合S呢？因为随着Union操作，动态集合S中的子集合个数越来越少。</p>
+<p>数据结构的基本操作决定了它的应用范围，对并查集而言，一个简单的应用就是判断无向图的连通分量个数，或者判断无向图中任何两个顶点是否连通。</p>
+<h2 id="二、并查集的存储结构及实现分析"><a href="#二、并查集的存储结构及实现分析" class="headerlink" title="二、并查集的存储结构及实现分析"></a>二、并查集的存储结构及实现分析</h2><p><strong>①存储结构</strong></p>
+<p>并查集(大S)由若干子集合si构成，并查集的逻辑结构就是一个森林。si表示森林中的一棵子树。一般以子树的根作为该子树的代表。</p>
+<p>而对于并查集的存储结构，可用一维数组和链表来实现。这里主要介绍一维数组的实现。</p>
+<p>根据前面介绍的基本操作再加上存储结构，并查集类的实现架构如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DisjSets</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] s;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> count;<span class="comment">//记录并查集中子集合的个数(子树的个数)</span></div><div class="line"></div><div class="line">       <span class="function"><span class="keyword">public</span> <span class="title">DisjSets</span><span class="params">(<span class="keyword">int</span> numElements)</span> </span>&#123;</div><div class="line">       <span class="comment">//构造函数，负责初始化并查集</span></div><div class="line">       &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unionByHeight</span><span class="params">(<span class="keyword">int</span> root1, <span class="keyword">int</span> root2)</span></span>&#123;    </div><div class="line">        <span class="comment">//union操作</span></div><div class="line">       &#125;</div><div class="line"></div><div class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</div><div class="line">       <span class="comment">//find 操作</span></div><div class="line">      &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>由于Find操作需要找到该子集合的代表元素，而代表元素是树根，因此需要保存树中结点的父亲，对于每一个结点，如果知道了父亲，沿着父结点链就可以最终找到树根。</p>
+<p>为了简单起见，假设一维数组s中的每个元素 s[i] 表示该元素 i 的父亲。这里有两个需要注意的地方：①我们用一维数组来存储并查集，数组的元素s[i]表示的是结点的父亲的位置。②数组元素的下标 i 则是结点的标识。如：s[5]=4，节点5 在数组的第4号位置处。</p>
+<p>假设有并查集中6个元素，初始时，所有的元素都相互独立，处在不同的集合中：</p>
+<p><img src="http://images2015.cnblogs.com/blog/715283/201605/715283-20160512092946874-1968107559.jpg" alt="img"></p>
+<p>对应的一维数组初始化如下：</p>
+<p><img src="http://images2015.cnblogs.com/blog/715283/201605/715283-20160512093206499-946248423.jpg" alt="img"></p>
+<p>因为，初始时每个元素代表一个集合，该元素本身就是树根。树根的父结点用 -1 来表示。代码实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">DisjSets</span><span class="params">(<span class="keyword">int</span> numElements)</span> </span>&#123;</div><div class="line">        s = <span class="keyword">new</span> <span class="keyword">int</span>[numElements];</div><div class="line">        count = numElements;</div><div class="line">        <span class="comment">//初始化并查集,相当于新建了s.length 个互不相交的集合</span></div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length; i++)</div><div class="line">            s[i] = -<span class="number">1</span>;<span class="comment">//s[i]存储的是高度(秩)信息</span></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p><strong>②基本操作实现</strong></p>
+<p>Union操作就是将两个不相交的子集合合并成一个大集合。简单的Union操作是非常容易实现的，因为只需要把一棵子树的根结点指向另一棵子树即可完成合并。</p>
+<p>比如合并 节点3 和节点4：</p>
+<p><img src="http://images2015.cnblogs.com/blog/715283/201609/715283-20160917221552352-697575435.png" alt="img"></p>
+<p>这里的合并很随意，把任意一棵子树的结点指向另一棵子树结点就完成了合并。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span> root1, <span class="keyword">int</span> root2)</span></span>&#123;</div><div class="line">  s[root2] = root1;<span class="comment">//将root1作为root2的新树根</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>但是，这只是一个简单的情况，如果待合并的两棵子树很大，而且高度不一样时，如何使得合并操作生成的新的子树的高度最小？因为高度越小的子树Find操作越快。</p>
+<p>后面会介绍一种更好的合并策略，以支持Quick Union/Find。</p>
+<p>Find操作就是查找某个元素所在的集合，返回该集合的代表元素。在union(3,4) 和 union(1,2)后，并查集如下：</p>
+<p><img src="http://images2015.cnblogs.com/blog/715283/201609/715283-20160917221621664-276304966.png" alt="img"></p>
+<p>此时的一维数组如下：</p>
+<p><img src="http://images2015.cnblogs.com/blog/715283/201609/715283-20160917221645695-1653305001.png" alt="img"></p>
+<p>此时一共有4个子集合。第一个集合的代表元素为0，第二个集合的代表元素为1，第三个集合的代表元素为3，第四个集合的代表元素为5，故：</p>
+<p>find(2)返回1，find(0)返回0。因为 结点3 和 结点4 在同一个集合内，find(4)返回3，find(3)返回3。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</div><div class="line"> <span class="keyword">if</span>(s[x] &lt; <span class="number">0</span>)</div><div class="line">   <span class="keyword">return</span> x;</div><div class="line"> <span class="keyword">else</span></div><div class="line">   <span class="keyword">return</span> find(s[x]);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里find(int x)返回的是最里层递归执行后，得到的值。由于只有树根的父结点位置小于0，故返回的是树根结点的标识。</p>
+<p>（数组中索引 i 处的元素 s[i] 小于0，表示 结点i 是根结点…..）</p>
+<h2 id="三、Union-Find的改进—-Quick-Union-Find"><a href="#三、Union-Find的改进—-Quick-Union-Find" class="headerlink" title="三、Union/Find的改进—-Quick Union/Find"></a>三、Union/Find的改进—-Quick Union/Find</h2><p> 上面介绍的Union操作很随意：任选一棵子树，将另一棵子树的根指向它即完成了合并。如果一直按照上述方式合并，很可能产生一棵非常不平衡的子树。</p>
+<p>比如在上面的基础上union(2,3)后</p>
+<p><img src="http://images2015.cnblogs.com/blog/715283/201609/715283-20160917221709180-221103150.png" alt="img"></p>
+<p>树越来越高了，此时会影响到Find操作的效率。比如，find(4)时，会一直沿着父结点遍历直到根，4–&gt;3–&gt;2–&gt;1</p>
+<p>这里引入一种新的合并策略，这是一种启发式策略，称之为<strong>按秩合并：将秩小的子树的根指向秩大的子树的根。</strong></p>
+<p>秩的定义：对每个结点，用秩表示结点高度的一个上界。为什么是上界？</p>
+<p>因为路径压缩不完全与按高度求并兼容。路径压缩会改变树的高度，这样在Union操作之前，我们就无法获得子树的高度的精确值，因此就不计算高度的精确值，而是存储每棵树的高度的估计值，这个值称之为秩。</p>
+<p>说了这么多，按秩求并就是在合并之前，先判断下哪棵子树更高，让矮的子树的根指向高的子树的根。</p>
+<p> 除了按高度求并之外，还可以按大小求并，即先判断下哪棵子树含有的结点数目多，让较小的子树的根指向较大的子树的根。</p>
+<p> 对于按高度求并，需要解释下数组中存储的元素：是高度的负值再减去1。这样，初始时，所有元素都是-1，而树根节点的高度为0，s[i]=-1。</p>
+<p>按高度求并的代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">     * </div><div class="line">     * <span class="doctag">@param</span> root1 并查集中以root1为代表的某个子集</div><div class="line">     * <span class="doctag">@param</span> roo2 并查集中以root2为代表的某个子集</div><div class="line">     * 按高度(秩)合并以root1 和 root2为代表的两个集合</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unionByHeight</span><span class="params">(<span class="keyword">int</span> root1, <span class="keyword">int</span> root2)</span></span>&#123;</div><div class="line">        <span class="keyword">if</span>(find(root1) == find(root2))</div><div class="line">            <span class="keyword">return</span>;<span class="comment">//root1 与 root2已经连通了</span></div><div class="line">        </div><div class="line">        <span class="keyword">if</span>(s[root2] &lt; s[root1])<span class="comment">//root2 is deeper</span></div><div class="line">            s[root1] = root2;</div><div class="line">        <span class="keyword">else</span>&#123;</div><div class="line">            <span class="keyword">if</span>(s[root1] == s[root2])<span class="comment">//root1 and root2 is the same deeper</span></div><div class="line">                s[root1]--;<span class="comment">//将root1的高度加1</span></div><div class="line">            s[root2] = root1;<span class="comment">//将root2的根(指向)更新为root1</span></div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        count--;<span class="comment">//每union一次,子树数目减1</span></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h4 id="使用了路径压缩的Find的操作"><a href="#使用了路径压缩的Find的操作" class="headerlink" title="使用了路径压缩的Find的操作"></a>使用了路径压缩的Find的操作</h4><p>上面程序代码find方法只是简单地把待查找的元素所在的根返回。路径压缩是指，在find操作进行时，<strong>使find查找路径中的顶点(的父亲)都直接指向为树根（这很明显地改变了子树的高度）</strong></p>
+<p>如何使find查找路径中经过的每个顶点都直接指向树根呢？只需要小小改动一下就可以了，这里用到了非常神奇的递归。修改后的find代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</div><div class="line">        <span class="keyword">if</span>(s[x] &lt; <span class="number">0</span>)<span class="comment">//s[x]为负数时,说明 x 为该子集合的代表(也即树根), 且s[x]的值表示树的高度</span></div><div class="line">            <span class="keyword">return</span> x;</div><div class="line">        <span class="keyword">else</span> </div><div class="line">            <span class="keyword">return</span> s[x] = find(s[x]);<span class="comment">//使用了路径压缩,让查找路径上的所有顶点都指向了树根(代表节点)</span></div><div class="line">            <span class="comment">//return find(s[x]); 没有使用 路径压缩</span></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>因为递归最终得到的返回值是根元素。第5行将根元素直接赋值给s[x]，s[x]在每次递归过程中相当于结点x的父结点指针。 </p>
+<h4 id="关于路径压缩对按”秩“求并的兼容性问题"><a href="#关于路径压缩对按”秩“求并的兼容性问题" class="headerlink" title="关于路径压缩对按”秩“求并的兼容性问题"></a>关于路径压缩对按”秩“求并的兼容性问题</h4><p>上面的unionByHeight(int , int)是按照两棵树的高度来进行合并的。但是find操作中的路径压缩会对树的高度产生影响。使用了路径压缩后，树的高度变化了，但是数组并没有更新这个变化。因为无法更新！！（我们没有在Find操作中去计算原来的树的高度，然后再计算新的树的高度，这样不现实，复杂度太大了）</p>
+<p>举个例子：</p>
+<p>依次高度unionByHeight(3, 4)、unionByHeight(1, 3)、unionByHeight(1, 0)后，并查集如下：</p>
+<p><img src="http://images2015.cnblogs.com/blog/715283/201609/715283-20160917221738289-52951535.png" alt="img"></p>
+<p>此时，数组中的元素如下：</p>
+<p><img src="http://images2015.cnblogs.com/blog/715283/201609/715283-20160917221800680-1425522009.png" alt="img"></p>
+<p>可以看出，此时只有两棵子树，一棵根结点为1，另一棵只有一个结点5。结点1的s[1]=-3，它所表示是该子树的高度为2，如果此时执行find(4)，会改变这棵树的高度！但是，数组s中存储的根的高度却没有更新，只会更新查找路径上的顶点的高度。执行完find(4)后，变成：</p>
+<p><img src="http://images2015.cnblogs.com/blog/715283/201609/715283-20160917221820586-1276085996.png" alt="img"></p>
+<p><strong>查找路径为 4–&gt;3–&gt;1，find(4)使得查找路径上的所有顶点的父结点指向了根。如，将结点4 指向了根。但是没有根结点的高度（没有影响树根的秩），因为s[1]的值仍为-3</strong></p>
+<p><strong>-3表示的高度为2，但是树的高度实际上已经变成了1</strong></p>
+<p>执行find(4)之后，树实际上是这样的：</p>
+<p><img src="http://images2015.cnblogs.com/blog/715283/201609/715283-20160917221844055-1168870298.png" alt="img"></p>
+<p><em>（关于路径压缩对按秩合并有影响，我一直有个疑问，希望有大神指点啊）。。。。</em></p>
+<p><em>路径压缩改变了子树的高度，而这个高度是按秩求的依据。，而且当高度改变之后，我们是无法更新这个变化了的高度的。那这会不会影响按秩求并的正确性？或者说使按秩求并达不到减小新生成的子树的高度的效果？</em></p>
+<h2 id="四、并查集的应用"><a href="#四、并查集的应用" class="headerlink" title="四、并查集的应用"></a>四、并查集的应用</h2><p> 并查集数据结构非常简单，基本操作也很简单。但是用途感觉很大。比如，求解无向图中连通分量的个数，生成迷宫……</p>
+<p> 这些应用本质上就是：初始时都是一个个不连通的对象，经过一步步处理，变成连通的了。。。。。</p>
+<p>如迷宫，初始时，起点和终点不连通，随机地打开起点到终点路径上的一个方向，直至起点和终点连通了，就生成了一个迷宫。</p>
+<p>如，无向图的连通分量个数，初始时，将无向图中各个顶点视为不连通的子集合，对图中每一条边，相当于union这条边对应的两个顶点分别所在的集合，直至所有的边都处理完后，还剩下的集合的个数即为连通分量的个数。</p>
+<h2 id="五、完整代码"><a href="#五、完整代码" class="headerlink" title="五、完整代码"></a>五、完整代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DisjSets</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] s;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> count;<span class="comment">//记录并查集中子集合的个数(子树的个数)</span></div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DisjSets</span><span class="params">(<span class="keyword">int</span> numElements)</span> </span>&#123;</div><div class="line">        s = <span class="keyword">new</span> <span class="keyword">int</span>[numElements];</div><div class="line">        count = numElements;</div><div class="line">        <span class="comment">//初始化并查集,相当于新建了s.length 个互不相交的集合</span></div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length; i++)</div><div class="line">            s[i] = -<span class="number">1</span>;<span class="comment">//s[i]存储的是高度(秩)信息</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">/**</span></div><div class="line">     * </div><div class="line">     * <span class="doctag">@param</span> root1 并查集中以root1为代表的某个子集</div><div class="line">     * <span class="doctag">@param</span> roo2 并查集中以root2为代表的某个子集</div><div class="line">     * 按高度(秩)合并以root1 和 root2为代表的两个集合</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unionByHeight</span><span class="params">(<span class="keyword">int</span> root1, <span class="keyword">int</span> root2)</span></span>&#123;</div><div class="line">        <span class="keyword">if</span>(find(root1) == find(root2))</div><div class="line">            <span class="keyword">return</span>;<span class="comment">//root1 与 root2已经连通了</span></div><div class="line">        </div><div class="line">        <span class="keyword">if</span>(s[root2] &lt; s[root1])<span class="comment">//root2 is deeper</span></div><div class="line">            s[root1] = root2;</div><div class="line">        <span class="keyword">else</span>&#123;</div><div class="line">            <span class="keyword">if</span>(s[root1] == s[root2])<span class="comment">//root1 and root2 is the same deeper</span></div><div class="line">                s[root1]--;<span class="comment">//将root1的高度加1</span></div><div class="line">            s[root2] = root1;<span class="comment">//将root2的根(指向)更新为root1</span></div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        count--;<span class="comment">//每union一次,子树数目减1</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span> root1, <span class="keyword">int</span> root2)</span></span>&#123;</div><div class="line">        s[root2] = root1;<span class="comment">//将root1作为root2的新树根</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unionBySize</span><span class="params">(<span class="keyword">int</span> root1, <span class="keyword">int</span> root2)</span></span>&#123;</div><div class="line">        </div><div class="line">        <span class="keyword">if</span>(find(root1) == find(root2))</div><div class="line">            <span class="keyword">return</span>;<span class="comment">//root1 与 root2已经连通了</span></div><div class="line">        </div><div class="line">        <span class="keyword">if</span>(s[root2] &lt; s[root1])<span class="comment">//root2 is deeper</span></div><div class="line">            s[root1] = root2;</div><div class="line">        <span class="keyword">else</span>&#123;</div><div class="line">            <span class="keyword">if</span>(s[root1] == s[root2])<span class="comment">//root1 and root2 is the same deeper</span></div><div class="line">                s[root1]--;<span class="comment">//将root1的高度加1</span></div><div class="line">            s[root2] = root1;<span class="comment">//将root2的根(指向)更新为root1</span></div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        count--;<span class="comment">//每union一次,子树数目减1</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</div><div class="line">        <span class="keyword">if</span>(s[x] &lt; <span class="number">0</span>)<span class="comment">//s[x]为负数时,说明 x 为该子集合的代表(也即树根), 且s[x]的值表示树的高度</span></div><div class="line">            <span class="keyword">return</span> x;</div><div class="line">        <span class="keyword">else</span> </div><div class="line">            <span class="keyword">return</span> s[x] = find(s[x]);<span class="comment">//使用了路径压缩,让查找路径上的所有顶点都指向了树根(代表节点)</span></div><div class="line">            <span class="comment">//return find(s[x]); 没有使用 路径压缩</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">find0</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</div><div class="line">        <span class="keyword">if</span>(s[x] &lt; <span class="number">0</span>)</div><div class="line">            <span class="keyword">return</span> x;</div><div class="line">        <span class="keyword">else</span> </div><div class="line">            <span class="keyword">return</span> find0(s[x]);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> count;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/wechat-qcode.jpg" alt="Winner Liu wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/树/" rel="tag"># 树</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/09/常见树/" rel="next" title="常见树">
+                <i class="fa fa-chevron-left"></i> 常见树
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/09/B-树，B-树，B-树/" rel="prev" title="B-树，B+树，B*树">
+                B-树，B+树，B*树 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Winner Liu" />
+            
+              <p class="site-author-name" itemprop="name">Winner Liu</p>
+              <p class="site-description motion-element" itemprop="description">燃烧吧，我的小宇宙！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">113</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、并查集的介绍"><span class="nav-number">1.</span> <span class="nav-text">一、并查集的介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、并查集的存储结构及实现分析"><span class="nav-number">2.</span> <span class="nav-text">二、并查集的存储结构及实现分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、Union-Find的改进—-Quick-Union-Find"><span class="nav-number">3.</span> <span class="nav-text">三、Union/Find的改进—-Quick Union/Find</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用了路径压缩的Find的操作"><span class="nav-number">3.0.1.</span> <span class="nav-text">使用了路径压缩的Find的操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#关于路径压缩对按”秩“求并的兼容性问题"><span class="nav-number">3.0.2.</span> <span class="nav-text">关于路径压缩对按”秩“求并的兼容性问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、并查集的应用"><span class="nav-number">4.</span> <span class="nav-text">四、并查集的应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、完整代码"><span class="nav-number">5.</span> <span class="nav-text">五、完整代码</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Winner Liu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

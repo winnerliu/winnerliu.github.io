@@ -230,9 +230,43 @@
       
 
       
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
     </ul>
   
 
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
   
 </nav>
 
@@ -261,7 +295,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Java并发集合—ConcurrentHashMap/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/09/模板方法模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -280,7 +314,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/Java并发集合—ConcurrentHashMap/" itemprop="url">Java并发集合—/ConcurrentHashMap</a></h1>
+                <a class="post-title-link" href="/2018/06/09/模板方法模式/" itemprop="url">模板方法模式</a></h1>
         
 
         <div class="post-meta">
@@ -292,8 +326,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T11:48:22+08:00">
-                2018-06-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-09T18:15:25+08:00">
+                2018-06-09
               </time>
             
 
@@ -315,8 +349,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java并发/" itemprop="url" rel="index">
-                    <span itemprop="name">Java并发</span>
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/行为型模式/" itemprop="url" rel="index">
+                    <span itemprop="name">行为型模式</span>
                   </a>
                 </span>
 
@@ -354,12 +399,11 @@
       
         
           
-          前言 HashMap是我们平时开发过程中用的比较多的集合，但它是非线程安全的，在涉及到多线程并发的情况，进行put操作有可能会引起死循环，导致CPU利用率接近100%。
-123456789final 
+          一、模版方法模式的定义模板方法模式是类的行为模式。准备一个抽象类，将部分逻辑以具体方法以及具体构造函数的形式实现，然后声明一些抽象方法来迫使子类实现剩余的逻辑。不同的子类可以以不同的方式实现这些抽象方
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/08/Java并发集合—ConcurrentHashMap/#more" rel="contents">
+            <a class="btn" href="/2018/06/09/模板方法模式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -410,7 +454,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Java并发集合—LinkedBlockingQueue/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/09/策略模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -429,7 +473,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/Java并发集合—LinkedBlockingQueue/" itemprop="url">Java并发集合—/LinkedBlockingQueue</a></h1>
+                <a class="post-title-link" href="/2018/06/09/策略模式/" itemprop="url">策略模式</a></h1>
         
 
         <div class="post-meta">
@@ -441,8 +485,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T11:26:23+08:00">
-                2018-06-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-09T18:14:54+08:00">
+                2018-06-09
               </time>
             
 
@@ -464,8 +508,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java并发/" itemprop="url" rel="index">
-                    <span itemprop="name">Java并发</span>
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/行为型模式/" itemprop="url" rel="index">
+                    <span itemprop="name">行为型模式</span>
                   </a>
                 </span>
 
@@ -503,11 +558,11 @@
       
         
           
-          前言在前面的文章ArrayBlockingQueue中，已经对JDK中的BlockingQueue中的做了一个回顾，同时对ArrayBlockingQueue中的核心方法作了说明，而LinkedBlo
+          一、策略模式的简介1.定义策略模式属于对象的行为模式。其用意是针对一组算法，将每一个算法封装到具有共同接口的独立的类中，从而使得它们可以相互替换。策略模式使得算法可以在不影响到客户端的情况下发生变化。
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/08/Java并发集合—LinkedBlockingQueue/#more" rel="contents">
+            <a class="btn" href="/2018/06/09/策略模式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -558,7 +613,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Java并发集合—ArrayBlockingQueue/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/09/观察者模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -577,7 +632,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/Java并发集合—ArrayBlockingQueue/" itemprop="url">Java并发集合—/ArrayBlockingQueue</a></h1>
+                <a class="post-title-link" href="/2018/06/09/观察者模式/" itemprop="url">观察者模式</a></h1>
         
 
         <div class="post-meta">
@@ -589,8 +644,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T11:23:20+08:00">
-                2018-06-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-09T18:14:20+08:00">
+                2018-06-09
               </time>
             
 
@@ -612,8 +667,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java并发/" itemprop="url" rel="index">
-                    <span itemprop="name">Java并发</span>
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/行为型模式/" itemprop="url" rel="index">
+                    <span itemprop="name">行为型模式</span>
                   </a>
                 </span>
 
@@ -651,11 +717,11 @@
       
         
           
-          前言  本文的主要详细分析ArrayBlockingQueue的实现原理，由于该并发集合其底层是使用了java.util.ReentrantLock和java.util.Condition来完成并发控
+          一、观察者模式的概念观察者模式是对象的行为模式，又叫发布-订阅(Publish/Subscribe)模式、模型-视图(Model/View)模式、源-监听器(Source/Listener)模式或从属
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/08/Java并发集合—ArrayBlockingQueue/#more" rel="contents">
+            <a class="btn" href="/2018/06/09/观察者模式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -706,7 +772,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/深入理解ReentrantLock/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/09/迭代器模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -725,7 +791,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/深入理解ReentrantLock/" itemprop="url">深入理解ReentrantLock</a></h1>
+                <a class="post-title-link" href="/2018/06/09/迭代器模式/" itemprop="url">迭代器模式</a></h1>
         
 
         <div class="post-meta">
@@ -737,8 +803,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T11:22:34+08:00">
-                2018-06-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-09T18:13:45+08:00">
+                2018-06-09
               </time>
             
 
@@ -760,8 +826,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java并发/" itemprop="url" rel="index">
-                    <span itemprop="name">Java并发</span>
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/行为型模式/" itemprop="url" rel="index">
+                    <span itemprop="name">行为型模式</span>
                   </a>
                 </span>
 
@@ -799,11 +876,12 @@
       
         
           
-          前言java5之后，并发包中新增了Lock接口（以及相关实现类）用来实现锁的功能，它提供了与synchronized关键字类似的同步功能。既然有了synchronized这种内置的锁功能，为何要新增L
+          一、迭代器模式定义迭代器模式提供一种方法顺序访问一个聚合对象中的各个元素，而又不暴露其内部的表示。把游走的任务放在迭代器上，而不是聚合上。这样简化了聚合的接口和实现，也让责任各得其所。
+二、迭代器模式
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/08/深入理解ReentrantLock/#more" rel="contents">
+            <a class="btn" href="/2018/06/09/迭代器模式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -854,7 +932,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/AbstractQueuedSynchronizer详解/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/09/命令模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -873,7 +951,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/AbstractQueuedSynchronizer详解/" itemprop="url">AbstractQueuedSynchronizer详解</a></h1>
+                <a class="post-title-link" href="/2018/06/09/命令模式/" itemprop="url">命令模式</a></h1>
         
 
         <div class="post-meta">
@@ -885,8 +963,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T11:21:58+08:00">
-                2018-06-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-09T18:13:12+08:00">
+                2018-06-09
               </time>
             
 
@@ -908,8 +986,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java并发/" itemprop="url" rel="index">
-                    <span itemprop="name">Java并发</span>
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/行为型模式/" itemprop="url" rel="index">
+                    <span itemprop="name">行为型模式</span>
                   </a>
                 </span>
 
@@ -947,11 +1036,12 @@
       
         
           
-          一、AQS简介1.1 AQS介绍AbstractQueuedSynchronizer提供了一个基于FIFO队列，可以用于构建锁或者其他相关同步装置的基础框架。该同步器（以下简称同步器）利用了一个int
+          一、命令模式的概念命令模式属于对象的行为模式。命令模式又称为行动(Action)模式或交易(Transaction)模式。
+命令模式把一个请求或者操作封装到一个对象中。命令模式允许系统使用不同的请求把
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/08/AbstractQueuedSynchronizer详解/#more" rel="contents">
+            <a class="btn" href="/2018/06/09/命令模式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1002,7 +1092,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/CAS原子操作/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/09/代理模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -1021,7 +1111,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/CAS原子操作/" itemprop="url">CAS原子操作</a></h1>
+                <a class="post-title-link" href="/2018/06/09/代理模式/" itemprop="url">代理模式</a></h1>
         
 
         <div class="post-meta">
@@ -1033,8 +1123,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T11:20:52+08:00">
-                2018-06-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-09T18:12:24+08:00">
+                2018-06-09
               </time>
             
 
@@ -1056,8 +1146,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java并发/" itemprop="url" rel="index">
-                    <span itemprop="name">Java并发</span>
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/结构型模式/" itemprop="url" rel="index">
+                    <span itemprop="name">结构型模式</span>
                   </a>
                 </span>
 
@@ -1095,11 +1196,12 @@
       
         
           
-          乐观锁与悲观锁我们都知道，cpu是时分复用的，也就是把cpu的时间片，分配给不同的thread/process轮流执行，时间片与时间片之间，需要进行cpu切换，也就是会发生进程的切换。切换涉及到清空寄
+          一、模式定义代理模式(Proxy Pattern) ：给某一个对象提供一个代 理，并由代理对象控制对原对象的引用。代理模式的英 文叫做Proxy或Surrogate，它是一种对象结构型模式。
+二、模式
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/08/CAS原子操作/#more" rel="contents">
+            <a class="btn" href="/2018/06/09/代理模式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1150,7 +1252,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/volatile关键字/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/09/装饰者模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -1169,7 +1271,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/volatile关键字/" itemprop="url">volatile关键字</a></h1>
+                <a class="post-title-link" href="/2018/06/09/装饰者模式/" itemprop="url">装饰者模式</a></h1>
         
 
         <div class="post-meta">
@@ -1181,8 +1283,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T11:19:54+08:00">
-                2018-06-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-09T18:11:52+08:00">
+                2018-06-09
               </time>
             
 
@@ -1204,8 +1306,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java并发/" itemprop="url" rel="index">
-                    <span itemprop="name">Java并发</span>
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/结构型模式/" itemprop="url" rel="index">
+                    <span itemprop="name">结构型模式</span>
                   </a>
                 </span>
 
@@ -1243,12 +1356,12 @@
       
         
           
-          一、Java内存模型想要理解volatile为什么能确保可见性，就要先理解Java中的内存模型是什么样的。
-Java内存模型规定了所有的变量都存储在主内存中。每条线程中还有自己的工作内存，线程的工作内
+          一、装饰者模式的概念装饰者模式又名包装(Wrapper)模式。装饰者模式以对客户端透明的方式扩展对象的功能，是继承关系的一个替代方案。
+装饰者模式动态地将责任附加到对象身上。若要扩展功能，装饰者提供了
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/08/volatile关键字/#more" rel="contents">
+            <a class="btn" href="/2018/06/09/装饰者模式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1299,7 +1412,7 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/生产者-消费者模式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/09/外观模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -1318,7 +1431,7 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/生产者-消费者模式/" itemprop="url">生产者/消费者模式</a></h1>
+                <a class="post-title-link" href="/2018/06/09/外观模式/" itemprop="url">外观模式</a></h1>
         
 
         <div class="post-meta">
@@ -1330,8 +1443,8 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T11:19:11+08:00">
-                2018-06-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-09T18:11:15+08:00">
+                2018-06-09
               </time>
             
 
@@ -1353,8 +1466,19 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java并发/" itemprop="url" rel="index">
-                    <span itemprop="name">Java并发</span>
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/结构型模式/" itemprop="url" rel="index">
+                    <span itemprop="name">结构型模式</span>
                   </a>
                 </span>
 
@@ -1392,11 +1516,11 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
       
         
           
-          一、线程间通信的两种方式1.wait()/notify()Object类中相关的方法有notify方法和wait方法。因为wait和notify方法定义在Object类中，因此会被所有的类所继承。这些
+          一、外观模式概述1.定义外观模式(Facade Pattern)：外部与一个子系统的通信必须通过一个统一的外观对象进行，为子系统中的一组接口提供一个一致的界面，外观模式定义了一个高层接口，这个接口使得
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/08/生产者-消费者模式/#more" rel="contents">
+            <a class="btn" href="/2018/06/09/外观模式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1447,7 +1571,7 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Synchronized-ReentrantLock/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/09/适配器模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -1466,7 +1590,7 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/Synchronized-ReentrantLock/" itemprop="url">Synchronized/ReentrantLock</a></h1>
+                <a class="post-title-link" href="/2018/06/09/适配器模式/" itemprop="url">适配器模式</a></h1>
         
 
         <div class="post-meta">
@@ -1478,8 +1602,8 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T11:18:22+08:00">
-                2018-06-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-09T18:10:27+08:00">
+                2018-06-09
               </time>
             
 
@@ -1501,8 +1625,19 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java并发/" itemprop="url" rel="index">
-                    <span itemprop="name">Java并发</span>
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/结构型模式/" itemprop="url" rel="index">
+                    <span itemprop="name">结构型模式</span>
                   </a>
                 </span>
 
@@ -1540,11 +1675,12 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
       
         
           
-          ###一、线程同步问题的产生及解决方案问题的产生：Java允许多线程并发控制，当多个线程同时操作一个可共享的资源变量时（如数据的增删改查），将会导致数据不准确，相互之间产生冲突。如下例：假设有一个卖票
+          一、适配器模式简介1.定义适配器模式把一个类的接口变换成客户端所期待的另一种接口，从而使原本因接口不匹配而无法在一起工作的两个类能够在一起工作。
+2.定义阐述适配器提供客户类需要的接口，适配器的实现就
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/08/Synchronized-ReentrantLock/#more" rel="contents">
+            <a class="btn" href="/2018/06/09/适配器模式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1595,7 +1731,7 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/死锁/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/09/建造者模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Winner Liu">
@@ -1614,7 +1750,7 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/死锁/" itemprop="url">死锁</a></h1>
+                <a class="post-title-link" href="/2018/06/09/建造者模式/" itemprop="url">建造者模式</a></h1>
         
 
         <div class="post-meta">
@@ -1626,8 +1762,8 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T11:17:24+08:00">
-                2018-06-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-09T18:09:47+08:00">
+                2018-06-09
               </time>
             
 
@@ -1649,8 +1785,19 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java并发/" itemprop="url" rel="index">
-                    <span itemprop="name">Java并发</span>
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/创建型模式/" itemprop="url" rel="index">
+                    <span itemprop="name">创建型模式</span>
                   </a>
                 </span>
 
@@ -1688,15 +1835,12 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
       
         
           
-          一、死锁产生的条件一般来说，要出现死锁问题需要满足以下条件：  
-
-互斥条件：一个资源每次只能被一个线程使用。  
-请求与保持条件：一个线程因请求资源而阻塞时，对已获得的资源保持不放。  
-不剥夺条件
+          一、模式定义造者模式(Builder Pattern)：将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。
+建造者模式是一步一步创建一个复杂的对象，它允许用户只通过指定复杂对象
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/08/死锁/#more" rel="contents">
+            <a class="btn" href="/2018/06/09/建造者模式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1738,7 +1882,7 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1788,7 +1932,7 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-count">113</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1799,7 +1943,7 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1810,7 +1954,7 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">71</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -2015,6 +2159,323 @@ Java内存模型规定了所有的变量都存储在主内存中。每条线程�
 
 
   
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
 
 
 
